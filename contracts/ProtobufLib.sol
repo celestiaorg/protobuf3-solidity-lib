@@ -106,8 +106,18 @@ library ProtobufLib {
         return (pos, decoded_val);
     }
 
+    /// @notice Decode Boolean.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded bool
     function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {}
 
+    /// @notice Decode enumeration.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded enum as raw int
     function decode_enum(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
     /// @notice Decode fixed 64-bit int.
@@ -142,15 +152,40 @@ library ProtobufLib {
         return (pos, decoded_val);
     }
 
-    function decode_length_delimited(uint256 p, bytes memory buf) internal pure {}
+    /// @notice Decode length-delimited field.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded field
+    function decode_length_delimited(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_string(uint256 p, bytes memory buf) internal pure {}
+    /// @notice Decode string.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded field
+    function decode_string(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_bytes(uint256 p, bytes memory buf) internal pure {}
+    /// @notice Decode bytes array.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded field
+    function decode_bytes(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_embedded_message(uint256 p, bytes memory buf) internal pure {}
+    /// @notice Decode embedded message.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded field
+    function decode_embedded_message(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_packed_repeated(uint256 p, bytes memory buf) internal pure {}
+    /// @notice Decode packed repeated field
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded field
+    function decode_packed_repeated(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
     /// @notice Decode fixed 32-bit int.
     /// @param p Position
