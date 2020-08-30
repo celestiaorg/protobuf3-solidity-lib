@@ -1,0 +1,19 @@
+{
+  "name": "@lazyledger/protobuf3-solidity-lib",
+  "version": "0.1.0",
+  "description": "Codec library for protobuf3 in Solidity",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lazyledger/protobuf3-solidity-lib.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lazyledger/protobuf3-solidity-lib/issues"
+  },
+  "homepage": "https://github.com/lazyledger/protobuf3-solidity-lib#readme"
+}
