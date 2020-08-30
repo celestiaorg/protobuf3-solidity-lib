@@ -147,6 +147,35 @@ library ProtobufLib {
         return (pos, val);
     }
 
+    /// @notice Decode fixed 32-bit int.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_bits32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
+        uint32 val;
+
+        for (uint256 i = 0; i < 4; i++) {
+            uint8 b = uint8(buf[p + i]);
+
+            // Little endian
+            val |= uint32(b) << uint32(i * 8);
+        }
+
+        return (p + 4, val);
+    }
+
+    /// @notice Decode fixed uint32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_fixed32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
+        (uint256 pos, uint32 val) = decode_bits32(p, buf);
+
+        return (pos, val);
+    }
+
     /// @notice Decode length-delimited field.
     /// @param p Position
     /// @param buf Buffer
@@ -204,35 +233,6 @@ library ProtobufLib {
     /// @return Field bytes
     function decode_packed_repeated(uint256 p, bytes memory buf) internal pure returns (uint256, bytes memory) {
         // TODO
-    }
-
-    /// @notice Decode fixed 32-bit int.
-    /// @param p Position
-    /// @param buf Buffer
-    /// @return New position
-    /// @return Decoded int
-    function decode_bits32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
-        uint32 val;
-
-        for (uint256 i = 0; i < 4; i++) {
-            uint8 b = uint8(buf[p + i]);
-
-            // Little endian
-            val |= uint32(b) << uint32(i * 8);
-        }
-
-        return (p + 4, val);
-    }
-
-    /// @notice Decode fixed uint32.
-    /// @param p Position
-    /// @param buf Buffer
-    /// @return New position
-    /// @return Decoded int
-    function decode_fixed32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
-        (uint256 pos, uint32 val) = decode_bits32(p, buf);
-
-        return (pos, val);
     }
 
     ////////////////////////////////////
