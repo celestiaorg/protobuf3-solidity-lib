@@ -20,11 +20,11 @@ contract("TestFixture", async (accounts) => {
   it("[decode] key", async () => {
     const instance = await TestFixture.deployed();
 
-    // 0x09 : 0000 1001
-    const result = await instance.decode_key.call(0, "0x09");
-    const { 0: pos, 1: key, 2: type } = result;
+    // 0x11 : 0001 0001
+    const result = await instance.decode_key.call(0, "0x11");
+    const { 0: pos, 1: field, 2: type } = result;
     assert.equal(pos, 1);
-    assert.equal(key, 1);
+    assert.equal(field, 2);
     assert.equal(type, 1);
   });
 });
