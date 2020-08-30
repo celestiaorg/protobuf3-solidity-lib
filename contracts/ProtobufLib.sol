@@ -3,7 +3,7 @@ pragma solidity >=0.6.0 <8.0.0;
 
 library ProtobufLib {
     /// @notice Protobuf wire types.
-    enum WireType { Varint, Bits64, LengthDelimited, StartGroup, EndGroup, Bits32 }
+    enum WireType { Varint, Bits64, LengthDelimited, StartGroup, EndGroup, Bits32, WIRE_TYPE_MAX }
 
     /// @notice Maximum number of bytes for a varint.
     /// @notice 64 bits, in groups of base-128 (7 bits).
@@ -33,10 +33,15 @@ library ProtobufLib {
         // (field_number << 3) | wire_type
         (uint256 pos, uint64 key) = decode_varint(p, buf);
         uint64 field_number = key >> 3;
-        WireType wire_type = WireType(key & 0x07);
+        uint64 wire_type_val = key & 0x07;
+        require(wire_type_val < uint64(WireType.WIRE_TYPE_MAX), "key wire type out of bounds");
+        WireType wire_type = WireType(wire_type_val);
 
         // Start and end group types are deprecated, so forbid them
-        require(wire_type != WireType.StartGroup && wire_type != WireType.EndGroup);
+        require(
+            wire_type != WireType.StartGroup && wire_type != WireType.EndGroup,
+            "key wire type must not be deprecated"
+        );
 
         return (pos, field_number, wire_type);
     }
@@ -89,7 +94,7 @@ library ProtobufLib {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0);
+        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
 
         return (pos, uint32(val));
     }
