@@ -75,12 +75,12 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_uint32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
-        (uint256 pos, uint64 decoded_val) = decode_varint(p, buf);
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
-        require(decoded_val & 0xFFFFFFFF00000000 == 0);
+        require(val & 0xFFFFFFFF00000000 == 0);
 
-        return (pos, uint32(decoded_val));
+        return (pos, uint32(val));
     }
 
     /// @notice Decode varint uint64.
@@ -89,9 +89,9 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_uint64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
-        (uint256 pos, uint64 decoded_val) = decode_varint(p, buf);
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
 
-        return (pos, decoded_val);
+        return (pos, val);
     }
 
     /// @notice Decode Boolean.
@@ -136,9 +136,9 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_fixed64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
-        (uint256 pos, uint64 decoded_val) = decode_bits64(p, buf);
+        (uint256 pos, uint64 val) = decode_bits64(p, buf);
 
-        return (pos, decoded_val);
+        return (pos, val);
     }
 
     /// @notice Decode length-delimited field.
@@ -210,9 +210,9 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_fixed32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
-        (uint256 pos, uint32 decoded_val) = decode_bits32(p, buf);
+        (uint256 pos, uint32 val) = decode_bits32(p, buf);
 
-        return (pos, decoded_val);
+        return (pos, val);
     }
 
     ////////////////////////////////////
