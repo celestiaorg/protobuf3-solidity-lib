@@ -52,6 +52,7 @@ library ProtobufLib {
         uint256 i;
 
         for (i = 0; i < MAX_VARINT_BYTES; i++) {
+            // Get byte at offset
             uint8 b = uint8(buf[p + i]);
 
             // Highest bit is used to indicate if there are more bytes to come
@@ -63,11 +64,18 @@ library ProtobufLib {
 
             // Mask to get keep going bit: 1000 0000
             if (b & 0x80 == 0) {
+                require(v != 0, "varint has trailing zeroes");
                 break;
             }
         }
 
         require(i < MAX_VARINT_BYTES, "varint used more than MAX_VARINT_BYTES bytes");
+
+        // If all 10 bytes are used, the last byte (most significant 7 bits)
+        // must be at most 0000 0001, since 7*9 = 63
+        if (i == MAX_VARINT_BYTES - 1) {
+            require(uint8(buf[p + i]) <= 1, "varint uses more than 64 bits");
+        }
 
         return (p + i + 1, val);
     }
