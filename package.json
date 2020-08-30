@@ -4,7 +4,10 @@
   "description": "Codec library for protobuf3 in Solidity",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "truffle compile",
+    "format": "prettier --write **/*.{js,sol}",
+    "lint": "eslint --ignore-path .gitignore .",
+    "test": "truffle test"
   },
   "repository": {
     "type": "git",
