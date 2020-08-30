@@ -62,7 +62,7 @@ library ProtobufLib {
             val |= uint64(v) << uint64(i * 7);
 
             // Mask to get keep going bit: 1000 0000
-            if (0x80 == b & 0x80) {
+            if (b & 0x80 == 0x80) {
                 break;
             }
         }
@@ -72,43 +72,51 @@ library ProtobufLib {
         return (p + i, val);
     }
 
-    function decode_int32() internal pure {}
+    function decode_uint32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
+        uint256 pos = p;
+        uint64 decoded_val;
+        uint32 val;
 
-    function decode_int64() internal pure {}
+        (pos, decoded_val) = decode_varint(p, buf);
 
-    function decode_uint32() internal pure {}
+        // Highest 4 bytes must be 0
+        require(decoded_val & 0xFFFFFFFF00000000 == 0);
 
-    function decode_uint64() internal pure {}
+        val = uint32(decoded_val);
 
-    function decode_sint32() internal pure {}
+        return (pos, val);
+    }
 
-    function decode_sint64() internal pure {}
+    function decode_uint64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+        uint256 pos = p;
+        uint64 decoded_val;
 
-    function decode_bool() internal pure {}
+        (pos, decoded_val) = decode_varint(p, buf);
 
-    function decode_enum() internal pure {}
+        return (pos, decoded_val);
+    }
 
-    function decode_bits64() internal pure {}
+    function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {}
 
-    function decode_fixed64() internal pure {}
+    function decode_enum(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_sfixed64() internal pure {}
+    function decode_bits64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_length_delimited() internal pure {}
+    function decode_fixed64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_string() internal pure {}
+    function decode_length_delimited(uint256 p, bytes memory buf) internal pure {}
 
-    function decode_bytes() internal pure {}
+    function decode_string(uint256 p, bytes memory buf) internal pure {}
 
-    function decode_embedded_message() internal pure {}
+    function decode_bytes(uint256 p, bytes memory buf) internal pure {}
 
-    function decode_packed_repeated() internal pure {}
+    function decode_embedded_message(uint256 p, bytes memory buf) internal pure {}
 
-    function decode_bits32() internal pure {}
+    function decode_packed_repeated(uint256 p, bytes memory buf) internal pure {}
 
-    function decode_fixed32() internal pure {}
+    function decode_bits32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {}
 
-    function decode_sfixed32() internal pure {}
+    function decode_fixed32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {}
 
     ////////////////////////////////////
     // Encoding
