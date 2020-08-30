@@ -226,15 +226,6 @@ library ProtobufLib {
         return (pos, field);
     }
 
-    /// @notice Decode packed repeated field
-    /// @param p Position
-    /// @param buf Buffer
-    /// @return New position
-    /// @return Field bytes
-    function decode_packed_repeated(uint256 p, bytes memory buf) internal pure returns (uint256, bytes memory) {
-        // TODO
-    }
-
     ////////////////////////////////////
     // Encoding
     ////////////////////////////////////
