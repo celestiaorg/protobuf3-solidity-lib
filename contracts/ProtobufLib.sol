@@ -72,6 +72,11 @@ library ProtobufLib {
         return (p + i, val);
     }
 
+    /// @notice Decode varint uint32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
     function decode_uint32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
         uint256 pos = p;
         uint64 decoded_val;
@@ -87,6 +92,11 @@ library ProtobufLib {
         return (pos, val);
     }
 
+    /// @notice Decode varint uint64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
     function decode_uint64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
         uint256 pos = p;
         uint64 decoded_val;
@@ -100,9 +110,37 @@ library ProtobufLib {
 
     function decode_enum(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
 
-    function decode_bits64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
+    /// @notice Decode fixed 64-bit int.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_bits64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+        uint64 val;
 
-    function decode_fixed64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {}
+        for (uint256 i = 0; i < 8; i++) {
+            uint8 b = uint8(buf[p + i]);
+
+            // Little endian
+            val |= uint64(b) << uint64(i * 8);
+        }
+
+        return (p + 8, val);
+    }
+
+    /// @notice Decode fixed uint64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_fixed64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+        uint256 pos = p;
+        uint64 decoded_val;
+
+        (pos, decoded_val) = decode_bits64(p, buf);
+
+        return (pos, decoded_val);
+    }
 
     function decode_length_delimited(uint256 p, bytes memory buf) internal pure {}
 
@@ -114,9 +152,37 @@ library ProtobufLib {
 
     function decode_packed_repeated(uint256 p, bytes memory buf) internal pure {}
 
-    function decode_bits32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {}
+    /// @notice Decode fixed 32-bit int.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_bits32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
+        uint32 val;
 
-    function decode_fixed32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {}
+        for (uint256 i = 0; i < 4; i++) {
+            uint8 b = uint8(buf[p + i]);
+
+            // Little endian
+            val |= uint32(b) << uint32(i * 8);
+        }
+
+        return (p + 4, val);
+    }
+
+    /// @notice Decode fixed uint32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_fixed32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
+        uint256 pos = p;
+        uint32 decoded_val;
+
+        (pos, decoded_val) = decode_bits32(p, buf);
+
+        return (pos, decoded_val);
+    }
 
     ////////////////////////////////////
     // Encoding
