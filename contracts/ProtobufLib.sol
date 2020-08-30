@@ -35,6 +35,9 @@ library ProtobufLib {
         uint64 field_number = key >> 3;
         WireType wire_type = WireType(key & 0x07);
 
+        // Start and end group types are deprecated, so forbid them
+        require(wire_type != WireType.StartGroup && wire_type != WireType.EndGroup);
+
         return (pos, field_number, wire_type);
     }
 
