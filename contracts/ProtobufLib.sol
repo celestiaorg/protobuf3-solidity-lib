@@ -62,14 +62,14 @@ library ProtobufLib {
             val |= uint64(v) << uint64(i * 7);
 
             // Mask to get keep going bit: 1000 0000
-            if (b & 0x80 == 0x80) {
+            if (b & 0x80 == 0) {
                 break;
             }
         }
 
         require(i < MAX_VARINT_BYTES, "varint used more than MAX_VARINT_BYTES bytes");
 
-        return (p + i, val);
+        return (p + i + 1, val);
     }
 
     /// @notice Decode varint uint32.
