@@ -13,7 +13,7 @@ library ProtobufLib {
     // Decoding
     ////////////////////////////////////
 
-    /// @notice Decode key: (field_number << 3) | wire_type.
+    /// @notice Decode key.
     /// @dev https://developers.google.com/protocol-buffers/docs/encoding#structure
     /// @param p Position
     /// @param buf Buffer
@@ -28,7 +28,18 @@ library ProtobufLib {
             uint64,
             WireType
         )
-    {}
+    {
+        uint256 pos = p;
+        uint64 key;
+
+        // The key is a varint with encoding
+        // (field_number << 3) | wire_type
+        (pos, key) = decode_varint(p, buf);
+        uint64 field_number = key >> 3;
+        WireType wire_type = WireType(key & 0x07);
+
+        return (pos, field_number, wire_type);
+    }
 
     /// @notice Decode varint.
     /// @dev https://developers.google.com/protocol-buffers/docs/encoding#varints
