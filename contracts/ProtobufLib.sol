@@ -100,7 +100,13 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded bool
     function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {
-        // TODO
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        if (val == 1) {
+            return (pos, true);
+        }
+
+        return (pos, false);
     }
 
     /// @notice Decode enumeration.
