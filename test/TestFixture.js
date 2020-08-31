@@ -541,4 +541,23 @@ contract("TestFixture", async (accounts) => {
 
     await instance.decode_embedded_message(1, "0x" + encoded);
   });
+
+  it("[decode] packed repeated", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = [300, 42, 69];
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64", "repeated"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    console.log(encoded);
+
+    const result = await instance.decode_packed_repeated.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, "0x" + encoded.slice(4));
+
+    await instance.decode_packed_repeated(1, "0x" + encoded);
+  });
 });
