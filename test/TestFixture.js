@@ -245,6 +245,74 @@ contract("TestFixture", async (accounts) => {
     await instance.decode_int64(1, "0x" + encoded);
   });
 
+  it("[decode] sint32 max", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = 2147483647;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "sint32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_sint32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_sint32(1, "0x" + encoded);
+  });
+
+  it("[decode] sint32 min", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = -2147483648;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "sint32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_sint32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_sint32(1, "0x" + encoded);
+  });
+
+  it("[decode] sint64 max", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = "9223372036854775807";
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "sint64"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_sint64.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_sint64(1, "0x" + encoded);
+  });
+
+  it("[decode] sint64 min", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = "-9223372036854775808";
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "sint64"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_sint64.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_sint64(1, "0x" + encoded);
+  });
+
   it("[decode] bool", async () => {
     const instance = await TestFixture.deployed();
 
