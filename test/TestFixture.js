@@ -51,6 +51,74 @@ contract("TestFixture", async (accounts) => {
     await instance.decode_key(0, "0x" + encoded);
   });
 
+  it("[decode] int32 positive", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = 300;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "int32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_int32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_int32(1, "0x" + encoded);
+  });
+
+  it("[decode] int32 negative", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = -300;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "int32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_int32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_int32(1, "0x" + encoded);
+  });
+
+  it("[decode] int32 max", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = 2147483647;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "int32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_int32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_int32(1, "0x" + encoded);
+  });
+
+  it("[decode] int32 min", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = -2147483648;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "int32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_int32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_int32(1, "0x" + encoded);
+  });
+
   it("[decode] uint32", async () => {
     const instance = await TestFixture.deployed();
 
