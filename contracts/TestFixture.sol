@@ -96,4 +96,12 @@ contract TestFixture {
     function decode_packed_repeated(uint256 p, bytes memory buf) public returns (uint256, bytes memory) {
         return ProtobufLib.decode_packed_repeated(p, buf);
     }
+
+    function encode_key(uint64 field_number, uint64 wire_type) public returns (bytes memory) {
+        return ProtobufLib.encode_key(field_number, wire_type);
+    }
+
+    function encode_varint(uint64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_varint(n);
+    }
 }
