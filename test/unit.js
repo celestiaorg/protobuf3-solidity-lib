@@ -248,5 +248,24 @@ contract("TestFixture", async (accounts) => {
     assert.equal(val, "0x" + v.toString("hex"));
   });
 
-  // TODO test embedded messages
+  it("[decode] embedded message", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = 300;
+
+    const EmbeddedMessage = new protobuf.Type("EmbeddedMessage").add(new protobuf.Field("field", 1, "uint64"));
+    const embeddedMessage = EmbeddedMessage.create({ field: 300 });
+
+    const Message = new protobuf.Type("Message")
+      .add(new protobuf.Field("field", 1, "EmbeddedMessage"))
+      .add(EmbeddedMessage);
+    const message = Message.create({ field: embeddedMessage });
+
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_embedded_message.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 5);
+    assert.equal(val, "0x" + EmbeddedMessage.encode(embeddedMessage).finish().toString("hex"));
+  });
 });
