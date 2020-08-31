@@ -93,8 +93,10 @@ library ProtobufLib {
     function decode_int32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
-        // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
+        // Highest 4 bytes must be 0 if positive
+        if (val >> 63 == 0) {
+            require(val & 0xFFFFFFFF00000000 == 0, "varint int32 highest 4 bytes must be 0");
+        }
 
         return (pos, int32(uint32(val)));
     }
