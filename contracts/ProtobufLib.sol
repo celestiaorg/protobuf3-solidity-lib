@@ -278,26 +278,26 @@ library ProtobufLib {
     /// @param p Position
     /// @param buf Buffer
     /// @return New position
-    /// @return Field bytes
-    function decode_length_delimited(uint256 p, bytes memory buf) internal pure returns (uint256, bytes memory) {
+    /// @return Size in bytes
+    function decode_length_delimited(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
         // Length-delimited fields begin with a varint of the number of bytes that follow
         (uint256 pos, uint64 size) = decode_varint(p, buf);
 
-        bytes memory field = new bytes(size);
-        for (uint256 i = 0; i < size; i++) {
-            field[i] = buf[pos + i];
-        }
-
-        return (pos + size, field);
+        return (pos, size);
     }
 
     /// @notice Decode string.
     /// @param p Position
     /// @param buf Buffer
     /// @return New position
-    /// @return Decoded string
+    /// @return Size in bytes
     function decode_string(uint256 p, bytes memory buf) internal pure returns (uint256, string memory) {
-        (uint256 pos, bytes memory field) = decode_length_delimited(p, buf);
+        (uint256 pos, uint64 size) = decode_length_delimited(p, buf);
+
+        bytes memory field = new bytes(size);
+        for (uint256 i = 0; i < size; i++) {
+            field[i] = buf[pos + i];
+        }
 
         return (pos, string(field));
     }
@@ -306,33 +306,26 @@ library ProtobufLib {
     /// @param p Position
     /// @param buf Buffer
     /// @return New position
-    /// @return Field bytes
-    function decode_bytes(uint256 p, bytes memory buf) internal pure returns (uint256, bytes memory) {
-        (uint256 pos, bytes memory field) = decode_length_delimited(p, buf);
-
-        return (pos, field);
+    /// @return Size in bytes
+    function decode_bytes(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+        return decode_length_delimited(p, buf);
     }
 
     /// @notice Decode embedded message.
     /// @param p Position
     /// @param buf Buffer
     /// @return New position
-    /// @return Field bytes
-    function decode_embedded_message(uint256 p, bytes memory buf) internal pure returns (uint256, bytes memory) {
-        (uint256 pos, bytes memory field) = decode_length_delimited(p, buf);
-
-        return (pos, field);
+    /// @return Size in bytes
+    function decode_embedded_message(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+        return decode_length_delimited(p, buf);
     }
 
     /// @notice Decode packed repeated field.
     /// @param p Position
     /// @param buf Buffer
-    /// @return New position
-    /// @return Field bytes
-    function decode_packed_repeated(uint256 p, bytes memory buf) internal pure returns (uint256, bytes memory) {
-        (uint256 pos, bytes memory field) = decode_length_delimited(p, buf);
-
-        return (pos, field);
+    /// @return Size in bytes
+    function decode_packed_repeated(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+        return decode_length_delimited(p, buf);
     }
 
     ////////////////////////////////////
