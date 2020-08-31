@@ -77,7 +77,7 @@ contract("TestFixture", async (accounts) => {
   it("[decode] uint32 too large", async () => {
     const instance = await TestFixture.deployed();
 
-    const v = 4294967296;
+    const v = "4294967296";
 
     const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
     const message = Message.create({ field: v });
@@ -89,7 +89,7 @@ contract("TestFixture", async (accounts) => {
   it("[decode] uint64", async () => {
     const instance = await TestFixture.deployed();
 
-    const v = 4294967296;
+    const v = "4294967296";
 
     const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
     const message = Message.create({ field: v });
@@ -123,5 +123,80 @@ contract("TestFixture", async (accounts) => {
       instance.decode_uint64.call(1, "0x08ffffffffffffffffffff01"),
       "varint used more than MAX_VARINT_BYTES bytes"
     );
+  });
+
+  it("[decode] bool", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = true;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "bool"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_bool.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 2);
+    assert.equal(val, true);
+  });
+
+  it("[decode] bits64", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = "4294967296";
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "fixed64"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_bits64.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 9);
+    assert.equal(val, v);
+  });
+
+  it("[decode] fixed64", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = "4294967296";
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "fixed64"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_fixed64.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 9);
+    assert.equal(val, v);
+  });
+
+  it("[decode] bits32", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = 300;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "fixed32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_bits32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 5);
+    assert.equal(val, v);
+  });
+
+  it("[decode] fixed32", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = 300;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "fixed32"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_fixed32.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 5);
+    assert.equal(val, v);
   });
 });
