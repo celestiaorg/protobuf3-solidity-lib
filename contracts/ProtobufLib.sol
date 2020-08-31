@@ -190,8 +190,8 @@ library ProtobufLib {
     /// @param buf Buffer
     /// @return New position
     /// @return Decoded enum as raw int
-    function decode_enum(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
-        return decode_uint64(p, buf);
+    function decode_enum(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+        return decode_int32(p, buf);
     }
 
     /// @notice Decode fixed 64-bit int.
