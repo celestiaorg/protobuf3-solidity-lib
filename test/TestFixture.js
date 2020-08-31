@@ -621,7 +621,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_int32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_int32(v);
   });
@@ -636,7 +636,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_int32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_int32(v);
   });
@@ -651,7 +651,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_int32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_int32(v);
   });
@@ -666,7 +666,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_int32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_int32(v);
   });
@@ -681,7 +681,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_uint32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_uint32(v);
   });
@@ -696,7 +696,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_uint32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_uint32(v);
   });
@@ -711,7 +711,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_uint64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_uint64(v);
   });
@@ -726,7 +726,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_uint64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_uint64(v);
   });
@@ -741,7 +741,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_int64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_int64(v);
   });
@@ -756,7 +756,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_int64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_int64(v);
   });
@@ -771,7 +771,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sint32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sint32(v);
   });
@@ -786,7 +786,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sint32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sint32(v);
   });
@@ -801,7 +801,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sint64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sint64(v);
   });
@@ -816,7 +816,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sint64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sint64(v);
   });
@@ -831,7 +831,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_bool.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_bool(v);
   });
@@ -855,7 +855,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_enum.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_enum(v);
   });
@@ -870,7 +870,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_bits64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_bits64(v);
   });
@@ -885,7 +885,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_fixed64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_fixed64(v);
   });
@@ -900,7 +900,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sfixed64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sfixed64(v);
   });
@@ -915,7 +915,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sfixed64.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sfixed64(v);
   });
@@ -930,7 +930,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_bits32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_bits32(v);
   });
@@ -945,7 +945,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_fixed32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_fixed32(v);
   });
@@ -960,7 +960,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sfixed32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sfixed32(v);
   });
@@ -975,7 +975,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_sfixed32.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_sfixed32(v);
   });
@@ -990,7 +990,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_length_delimited.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_length_delimited(v);
   });
@@ -1005,7 +1005,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_string.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_string(v);
   });
@@ -1020,7 +1020,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_bytes.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_bytes(v);
   });
@@ -1041,7 +1041,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_embedded_message.call(v);
-    assert.equal(result, "0x" + EmbeddedMessage.encode(embeddedMessage).finish().toString("hex").slice(0, 2));
+    assert.equal(result, "0x" + EmbeddedMessage.encode(embeddedMessage).finish().toString("hex").slice(2));
 
     await instance.encode_embedded_message(v);
   });
@@ -1056,7 +1056,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_packed_repeated.call(v);
-    assert.equal(result, "0x" + encoded.slice(0, 2));
+    assert.equal(result, "0x" + encoded.slice(2));
 
     await instance.encode_packed_repeated(v);
   });
