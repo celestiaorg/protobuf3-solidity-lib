@@ -85,6 +85,33 @@ library ProtobufLib {
         return (p + i + 1, val);
     }
 
+    /// @notice Decode varint int32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_int32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+        // TODO
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        // Highest 4 bytes must be 0
+        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
+
+        return (pos, uint32(val));
+    }
+
+    /// @notice Decode varint int64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_int64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
+        // TODO
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        return (pos, val);
+    }
+
     /// @notice Decode varint uint32.
     /// @param p Position
     /// @param buf Buffer
@@ -105,6 +132,33 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_uint64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        return (pos, val);
+    }
+
+    /// @notice Decode varint sint32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sint32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+        // TODO
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        // Highest 4 bytes must be 0
+        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
+
+        return (pos, uint32(val));
+    }
+
+    /// @notice Decode varint sint64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sint64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
+        // TODO
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         return (pos, val);
@@ -165,6 +219,18 @@ library ProtobufLib {
         return (pos, val);
     }
 
+    /// @notice Decode fixed int64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sfixed64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
+        // TODO
+        (uint256 pos, uint64 val) = decode_bits64(p, buf);
+
+        return (pos, int64(val));
+    }
+
     /// @notice Decode fixed 32-bit int.
     /// @param p Position
     /// @param buf Buffer
@@ -192,6 +258,18 @@ library ProtobufLib {
         (uint256 pos, uint32 val) = decode_bits32(p, buf);
 
         return (pos, val);
+    }
+
+    /// @notice Decode fixed int32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sfixed32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+        // TODO
+        (uint256 pos, uint32 val) = decode_bits32(p, buf);
+
+        return (pos, int32(val));
     }
 
     /// @notice Decode length-delimited field.
