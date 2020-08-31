@@ -118,6 +118,8 @@ library ProtobufLib {
     function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
+        require(val <= 1, "bool is not 0 or 1");
+
         if (val == 1) {
             return (pos, true);
         }
