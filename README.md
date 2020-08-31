@@ -1,8 +1,27 @@
 # protobuf3-solidity-lib
 
+[![NPM Package](https://img.shields.io/npm/v/@lazyledger/protobuf3-solidity-lib)](https://www.npmjs.org/package/@lazyledger/protobuf3-solidity-lib)
 ![Node.js CI](https://github.com/lazyledger/protobuf3-solidity-lib/workflows/Node.js%20CI/badge.svg)
 
 Codec library for [protobuf3](https://developers.google.com/protocol-buffers) in Solidity. This library provides [encoding and decoding functions for core protobuf3 types](https://developers.google.com/protocol-buffers/docs/encoding).
+
+## Overview
+
+### Installation
+
+```sh
+npm install --save @lazyledger/protobuf3-solidity-lib
+```
+
+### Usage
+
+Import the library in Solidity:
+
+```solidity
+pragma solidity >=0.6.0 <8.0.0;
+
+import "@lazyledger/protobuf3-solidity-lib/contracts/ProtobufLib.sol";
+```
 
 ## Building from source
 
