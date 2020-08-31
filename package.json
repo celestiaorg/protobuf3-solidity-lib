@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "truffle compile",
+    "coverage": "truffle run coverage",
     "format": "prettier --write **/*.{js,sol}",
     "lint": "eslint --ignore-path .gitignore .",
     "test": "truffle test"
