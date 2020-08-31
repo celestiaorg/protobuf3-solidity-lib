@@ -582,4 +582,32 @@ contract("TestFixture", async (accounts) => {
 
     await instance.decode_packed_repeated(1, "0x" + encoded);
   });
+
+  it("[encode] varint", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = 300;
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.encode_varint.call(v);
+    assert.equal(result, "0x" + encoded.slice(2));
+
+    await instance.encode_varint(v);
+  });
+
+  it("[encode] key", async () => {
+    const instance = await TestFixture.deployed();
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 2, "uint64"));
+    const message = Message.create({ field: 1 });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.encode_key.call(2, 0);
+    assert.equal(result, "0x" + encoded.slice(0, 2));
+
+    await instance.encode_key(2, 0);
+  });
 });
