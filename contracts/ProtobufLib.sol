@@ -34,13 +34,13 @@ library ProtobufLib {
         (uint256 pos, uint64 key) = decode_varint(p, buf);
         uint64 field_number = key >> 3;
         uint64 wire_type_val = key & 0x07;
-        require(wire_type_val < uint64(WireType.WIRE_TYPE_MAX), "key wire type out of bounds");
+        require(wire_type_val < uint64(WireType.WIRE_TYPE_MAX), "ProtobufLib/decode_key - wire type out of bounds");
         WireType wire_type = WireType(wire_type_val);
 
         // Start and end group types are deprecated, so forbid them
         require(
             wire_type != WireType.StartGroup && wire_type != WireType.EndGroup,
-            "key wire type must not be deprecated"
+            "ProtobufLib/decode_key - wire type must not be deprecated"
         );
 
         return (pos, field_number, wire_type);
@@ -69,17 +69,17 @@ library ProtobufLib {
 
             // Mask to get keep going bit: 1000 0000
             if (b & 0x80 == 0) {
-                require(v != 0, "varint has trailing zeroes");
+                require(v != 0, "ProtobufLib/decode_varint - has trailing zeroes");
                 break;
             }
         }
 
-        require(i < MAX_VARINT_BYTES, "varint used more than MAX_VARINT_BYTES bytes");
+        require(i < MAX_VARINT_BYTES, "ProtobufLib/decode_varint - uses more than MAX_VARINT_BYTES bytes");
 
         // If all 10 bytes are used, the last byte (most significant 7 bits)
         // must be at most 0000 0001, since 7*9 = 63
         if (i == MAX_VARINT_BYTES - 1) {
-            require(uint8(buf[p + i]) <= 1, "varint uses more than 64 bits");
+            require(uint8(buf[p + i]) <= 1, "ProtobufLib/decode_varint - uses more than 64 bits");
         }
 
         return (p + i + 1, val);
@@ -95,7 +95,7 @@ library ProtobufLib {
 
         // Highest 4 bytes must be 0 if positive
         if (val >> 63 == 0) {
-            require(val & 0xFFFFFFFF00000000 == 0, "varint int32 highest 4 bytes must be 0");
+            require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_int32 - highest 4 bytes must be 0");
         }
 
         return (pos, int32(uint32(val)));
@@ -121,7 +121,7 @@ library ProtobufLib {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
+        require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_uint32 - highest 4 bytes must be 0");
 
         return (pos, uint32(val));
     }
@@ -147,7 +147,7 @@ library ProtobufLib {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
+        require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_sint32 - highest 4 bytes must be 0");
 
         return (pos, int32(val));
     }
@@ -172,7 +172,7 @@ library ProtobufLib {
     function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
-        require(val <= 1, "bool is not 0 or 1");
+        require(val <= 1, "ProtobufLib/decode_bool - is not 0 or 1");
 
         if (val == 1) {
             return (pos, true);
