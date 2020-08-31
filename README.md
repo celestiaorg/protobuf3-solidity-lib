@@ -42,3 +42,41 @@ Test:
 ```sh
 npm run test
 ```
+
+## Supported Features
+
+| type                | decode | encode |
+| ------------------- | :----: | :----: |
+| key                 |   ✔️   |   ❌   |
+| varint              |   ✔️   |   ❌   |
+| `int32`             |   ❌   |   ❌   |
+| `int64`             |   ❌   |   ❌   |
+| `uint32`            |   ✔️   |   ❌   |
+| `uint64`            |   ✔️   |   ❌   |
+| `sint32`            |   ❌   |   ❌   |
+| `sint64`            |   ❌   |   ❌   |
+| `fixed32`           |   ✔️   |   ❌   |
+| `sfixed32`          |   ❌   |   ❌   |
+| `fixed64`           |   ✔️   |   ❌   |
+| `sfixed64`          |   ❌   |   ❌   |
+| `bool`              |   ✔️   |   ❌   |
+| enum                |   ✔️   |   ❌   |
+| `string`            |   ✔️   |   ❌   |
+| `bytes`             |   ✔️   |   ❌   |
+| embedded messages   |   ✔️   |   ❌   |
+| `repeated int32`    |   ❌   |   ❌   |
+| `repeated int64`    |   ❌   |   ❌   |
+| `repeated uint32`   |   ❌   |   ❌   |
+| `repeated uint64`   |   ❌   |   ❌   |
+| `repeated sint32`   |   ❌   |   ❌   |
+| `repeated sint64`   |   ❌   |   ❌   |
+| `repeated fixed32`  |   ❌   |   ❌   |
+| `repeated sfixed32` |   ❌   |   ❌   |
+| `repeated fixed64`  |   ❌   |   ❌   |
+| `repeated sfixed64` |   ❌   |   ❌   |
+| `repeated bool`     |   ❌   |   ❌   |
+| `repeated` enum     |   ❌   |   ❌   |
+
+### Unsupported Features
+
+Start and end group deprecated wire types, `float`, `double` field types.
