@@ -3,7 +3,7 @@ pragma solidity >=0.6.0 <8.0.0;
 
 library ProtobufLib {
     /// @notice Protobuf wire types.
-    enum WireType { Varint, Bits64, LengthDelimited, StartGroup, EndGroup, Bits32 }
+    enum WireType { Varint, Bits64, LengthDelimited, StartGroup, EndGroup, Bits32, WIRE_TYPE_MAX }
 
     /// @notice Maximum number of bytes for a varint.
     /// @notice 64 bits, in groups of base-128 (7 bits).
@@ -33,10 +33,15 @@ library ProtobufLib {
         // (field_number << 3) | wire_type
         (uint256 pos, uint64 key) = decode_varint(p, buf);
         uint64 field_number = key >> 3;
-        WireType wire_type = WireType(key & 0x07);
+        uint64 wire_type_val = key & 0x07;
+        require(wire_type_val < uint64(WireType.WIRE_TYPE_MAX), "key wire type out of bounds");
+        WireType wire_type = WireType(wire_type_val);
 
         // Start and end group types are deprecated, so forbid them
-        require(wire_type != WireType.StartGroup && wire_type != WireType.EndGroup);
+        require(
+            wire_type != WireType.StartGroup && wire_type != WireType.EndGroup,
+            "key wire type must not be deprecated"
+        );
 
         return (pos, field_number, wire_type);
     }
@@ -52,6 +57,7 @@ library ProtobufLib {
         uint256 i;
 
         for (i = 0; i < MAX_VARINT_BYTES; i++) {
+            // Get byte at offset
             uint8 b = uint8(buf[p + i]);
 
             // Highest bit is used to indicate if there are more bytes to come
@@ -62,14 +68,21 @@ library ProtobufLib {
             val |= uint64(v) << uint64(i * 7);
 
             // Mask to get keep going bit: 1000 0000
-            if (b & 0x80 == 0x80) {
+            if (b & 0x80 == 0) {
+                require(v != 0, "varint has trailing zeroes");
                 break;
             }
         }
 
         require(i < MAX_VARINT_BYTES, "varint used more than MAX_VARINT_BYTES bytes");
 
-        return (p + i, val);
+        // If all 10 bytes are used, the last byte (most significant 7 bits)
+        // must be at most 0000 0001, since 7*9 = 63
+        if (i == MAX_VARINT_BYTES - 1) {
+            require(uint8(buf[p + i]) <= 1, "varint uses more than 64 bits");
+        }
+
+        return (p + i + 1, val);
     }
 
     /// @notice Decode varint uint32.
@@ -81,7 +94,7 @@ library ProtobufLib {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0);
+        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
 
         return (pos, uint32(val));
     }
@@ -104,6 +117,8 @@ library ProtobufLib {
     /// @return Decoded bool
     function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        require(val <= 1, "bool is not 0 or 1");
 
         if (val == 1) {
             return (pos, true);
