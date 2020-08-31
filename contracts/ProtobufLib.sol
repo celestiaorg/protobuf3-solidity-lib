@@ -517,12 +517,15 @@ library ProtobufLib {
     /// @return Marshaled bytes
     function encode_length_delimited(bytes memory b) internal pure returns (bytes memory) {
         // Length-delimited fields begin with a varint of the number of bytes that follow
-        bytes memory buf = new bytes(b.length);
+        bytes memory length_buf = encode_uint64(uint64(b.length));
+        bytes memory buf = new bytes(b.length + length_buf.length);
 
-        buf[0] = bytes1(uint8(b.length));
+        for (uint256 i = 0; i < length_buf.length; i++) {
+            buf[i] = length_buf[i];
+        }
 
         for (uint256 i = 0; i < b.length; i++) {
-            buf[i + 1] = b[i];
+            buf[i + length_buf.length] = b[i];
         }
 
         return buf;
