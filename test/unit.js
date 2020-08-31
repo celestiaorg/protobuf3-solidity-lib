@@ -141,6 +141,8 @@ contract("TestFixture", async (accounts) => {
     assert.equal(val, true);
   });
 
+  // TODO test enums
+
   it("[decode] bits64", async () => {
     const instance = await TestFixture.deployed();
 
@@ -200,4 +202,51 @@ contract("TestFixture", async (accounts) => {
     assert.equal(pos, 5);
     assert.equal(val, v);
   });
+
+  it("[decode] length-delimited", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = Buffer.from("deadbeef", "hex");
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "bytes"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_length_delimited.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 6);
+    assert.equal(val, "0x" + v.toString("hex"));
+  });
+
+  it("[decode] string", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = "foobar";
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "string"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_string.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 8);
+    assert.equal(val, v);
+  });
+
+  it("[decode] bytes", async () => {
+    const instance = await TestFixture.deployed();
+
+    const v = Buffer.from("deadbeef", "hex");
+
+    const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "bytes"));
+    const message = Message.create({ field: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_bytes.call(1, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, 6);
+    assert.equal(val, "0x" + v.toString("hex"));
+  });
+
+  // TODO test embedded messages
 });
