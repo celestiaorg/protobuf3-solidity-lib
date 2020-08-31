@@ -91,13 +91,12 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_int32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
-        // TODO
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
         require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
 
-        return (pos, int32(val));
+        return (pos, int32(uint32(val)));
     }
 
     /// @notice Decode varint int64.
@@ -106,7 +105,6 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_int64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
-        // TODO
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         return (pos, int64(val));
@@ -225,7 +223,6 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_sfixed64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
-        // TODO
         (uint256 pos, uint64 val) = decode_bits64(p, buf);
 
         return (pos, int64(val));
@@ -266,7 +263,6 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_sfixed32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
-        // TODO
         (uint256 pos, uint32 val) = decode_bits32(p, buf);
 
         return (pos, int32(val));
