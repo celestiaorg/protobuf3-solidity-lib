@@ -380,6 +380,182 @@ library ProtobufLib {
         return buf;
     }
 
+    /// @notice Encode varint int32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_int32(int32 n) internal pure returns (bytes memory) {
+        return encode_varint(uint64(n));
+    }
+
+    /// @notice Decode varint int64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_int64(int64 n) internal pure returns (bytes memory) {
+        return encode_varint(uint64(n));
+    }
+
+    /// @notice Encode varint uint32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_uint32(uint32 n) internal pure returns (bytes memory) {
+        return encode_varint(n);
+    }
+
+    /// @notice Encode varint uint64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_uint64(uint64 n) internal pure returns (bytes memory) {
+        return encode_varint(n);
+    }
+
+    /// @notice Encode varint sint32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sint32(int32 n) internal pure returns (bytes memory) {
+        // https://developers.google.com/protocol-buffers/docs/encoding#signed_integers
+        uint32 mask = 0;
+        if (n < 0) {
+            mask -= 1;
+        }
+        uint32 zigzag_val = (uint32(n) << 1) ^ mask;
+
+        return encode_varint(zigzag_val);
+    }
+
+    /// @notice Encode varint sint64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sint64(int64 n) internal pure returns (bytes memory) {
+        // https://developers.google.com/protocol-buffers/docs/encoding#signed_integers
+        uint64 mask = 0;
+        if (n < 0) {
+            mask -= 1;
+        }
+        uint64 zigzag_val = (uint64(n) << 1) ^ mask;
+
+        return encode_varint(zigzag_val);
+    }
+
+    /// @notice Encode Boolean.
+    /// @param b Boolean
+    /// @return Marshaled bytes
+    function encode_bool(bool b) internal pure returns (bytes memory) {
+        uint64 n = b ? 1 : 0;
+
+        return encode_varint(n);
+    }
+
+    /// @notice Encode enumeration.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_enum(int32 n) internal pure returns (bytes memory) {
+        return encode_int32(n);
+    }
+
+    /// @notice Encode fixed 64-bit int.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_bits64(uint64 n) internal pure returns (bytes memory) {
+        bytes memory buf = new bytes(8);
+
+        uint64 tmp = n;
+        for (uint256 i = 0; i < 8; i++) {
+            // Little endian
+            buf[i] = bytes1(uint8(tmp & 0xFF));
+            tmp = tmp >> 8;
+        }
+
+        return buf;
+    }
+
+    /// @notice Encode fixed uint64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_fixed64(uint64 n) internal pure returns (bytes memory) {
+        return encode_bits64(n);
+    }
+
+    /// @notice Encode fixed int64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sfixed64(int64 n) internal pure returns (bytes memory) {
+        return encode_bits64(uint64(n));
+    }
+
+    /// @notice Decode fixed 32-bit int.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_bits32(uint32 n) internal pure returns (bytes memory) {
+        bytes memory buf = new bytes(4);
+
+        uint64 tmp = n;
+        for (uint256 i = 0; i < 4; i++) {
+            // Little endian
+            buf[i] = bytes1(uint8(tmp & 0xFF));
+            tmp = tmp >> 8;
+        }
+
+        return buf;
+    }
+
+    /// @notice Encode fixed uint32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_fixed32(uint32 n) internal pure returns (bytes memory) {
+        return encode_bits32(n);
+    }
+
+    /// @notice Encode fixed int32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sfixed32(int32 n) internal pure returns (bytes memory) {
+        return encode_bits32(uint32(n));
+    }
+
+    /// @notice Encode length-delimited field.
+    /// @param b Bytes
+    /// @return Marshaled bytes
+    function encode_length_delimited(bytes memory b) internal pure returns (bytes memory) {
+        // Length-delimited fields begin with a varint of the number of bytes that follow
+        bytes memory buf = new bytes(b.length);
+
+        buf[0] = bytes1(uint8(b.length));
+
+        for (uint256 i = 0; i < b.length; i++) {
+            buf[i + 1] = b[i];
+        }
+
+        return buf;
+    }
+
+    /// @notice Encode string.
+    /// @param s String
+    /// @return Marshaled bytes
+    function encode_string(string memory s) internal pure returns (bytes memory) {
+        return encode_length_delimited(bytes(s));
+    }
+
+    /// @notice Encode bytes array.
+    /// @param b Bytes
+    /// @return Marshaled bytes
+    function encode_bytes(bytes memory b) internal pure returns (bytes memory) {
+        return encode_length_delimited(b);
+    }
+
+    /// @notice Encode embedded message.
+    /// @param m Message
+    /// @return Marshaled bytes
+    function encode_embedded_message(bytes memory m) internal pure returns (bytes memory) {
+        return encode_length_delimited(m);
+    }
+
+    /// @notice Encode packed repeated field.
+    /// @param b Bytes
+    /// @return Marshaled bytes
+    function encode_packed_repeated(bytes memory b) internal pure returns (bytes memory) {
+        return encode_length_delimited(b);
+    }
+
     ////////////////////////////////////
     // Helpers
     ////////////////////////////////////
