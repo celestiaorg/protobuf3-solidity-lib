@@ -51,7 +51,7 @@ contract("TestFixture", async (accounts) => {
     const message = Message.create({ field: 300 });
     const encoded = Message.encode(message).finish().toString("hex");
 
-    const result = await instance.decode_key.call(1, "0x" + encoded);
+    const result = await instance.decode_uint32.call(1, "0x" + encoded);
     const { 0: pos, 1: val } = result;
     assert.equal(pos, 3);
     assert.equal(val, 300);
