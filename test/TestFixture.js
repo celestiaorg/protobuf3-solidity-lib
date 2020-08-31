@@ -1042,10 +1042,10 @@ contract("TestFixture", async (accounts) => {
 
     const encoded = Message.encode(message).finish().toString("hex");
 
-    const result = await instance.encode_embedded_message.call("0x" + encodedEmbeddedMessage.slice(2));
-    assert.equal(result, "0x" + encoded.slice(4));
+    const result = await instance.encode_embedded_message.call("0x" + encodedEmbeddedMessage);
+    assert.equal(result, "0x" + encoded.slice(2));
 
-    // await instance.encode_embedded_message(v);
+    await instance.encode_embedded_message("0x" + encodedEmbeddedMessage);
   });
 
   it("[encode] packed repeated", async () => {
