@@ -20,6 +20,11 @@ contract("TestFixture", async (accounts) => {
     await TestFixture.deployed();
   });
 
+  //////////////////////////////////////
+  // NOTICE
+  // Tests call functions twice, once to run and another to measure gas.
+  //////////////////////////////////////
+
   it("[decode] varint", async () => {
     const instance = await TestFixture.deployed();
 
