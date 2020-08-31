@@ -9,6 +9,7 @@ contract("TestFixture", async (accounts) => {
     const message = Message.create({ field: 300 });
     const encoded = Message.encode(message).finish().toString("hex");
 
+    // field 1 -> 08
     // 300 -> ac 02
     assert.equal(encoded, "08ac02");
   });
