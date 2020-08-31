@@ -143,13 +143,15 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_sint32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
-        // TODO
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
         require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_sint32 - highest 4 bytes must be 0");
 
-        return (pos, int32(val));
+        // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
+        uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
+
+        return (pos, int32(uint32(zigzag_val)));
     }
 
     /// @notice Decode varint sint64.
@@ -158,10 +160,12 @@ library ProtobufLib {
     /// @return New position
     /// @return Decoded int
     function decode_sint64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
-        // TODO
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
-        return (pos, int64(val));
+        // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
+        uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
+
+        return (pos, int64(zigzag_val));
     }
 
     /// @notice Decode Boolean.
