@@ -97,7 +97,7 @@ library ProtobufLib {
         // Highest 4 bytes must be 0
         require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
 
-        return (pos, uint32(val));
+        return (pos, int32(val));
     }
 
     /// @notice Decode varint int64.
@@ -109,7 +109,7 @@ library ProtobufLib {
         // TODO
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
-        return (pos, val);
+        return (pos, int64(val));
     }
 
     /// @notice Decode varint uint32.
@@ -149,7 +149,7 @@ library ProtobufLib {
         // Highest 4 bytes must be 0
         require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
 
-        return (pos, uint32(val));
+        return (pos, int32(val));
     }
 
     /// @notice Decode varint sint64.
@@ -161,7 +161,7 @@ library ProtobufLib {
         // TODO
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
-        return (pos, val);
+        return (pos, int64(val));
     }
 
     /// @notice Decode Boolean.
