@@ -34,13 +34,13 @@ library ProtobufLib {
         (uint256 pos, uint64 key) = decode_varint(p, buf);
         uint64 field_number = key >> 3;
         uint64 wire_type_val = key & 0x07;
-        require(wire_type_val < uint64(WireType.WIRE_TYPE_MAX), "key wire type out of bounds");
+        require(wire_type_val < uint64(WireType.WIRE_TYPE_MAX), "ProtobufLib/decode_key - wire type out of bounds");
         WireType wire_type = WireType(wire_type_val);
 
         // Start and end group types are deprecated, so forbid them
         require(
             wire_type != WireType.StartGroup && wire_type != WireType.EndGroup,
-            "key wire type must not be deprecated"
+            "ProtobufLib/decode_key - wire type must not be deprecated"
         );
 
         return (pos, field_number, wire_type);
@@ -69,20 +69,47 @@ library ProtobufLib {
 
             // Mask to get keep going bit: 1000 0000
             if (b & 0x80 == 0) {
-                require(v != 0, "varint has trailing zeroes");
+                require(v != 0, "ProtobufLib/decode_varint - has trailing zeroes");
                 break;
             }
         }
 
-        require(i < MAX_VARINT_BYTES, "varint used more than MAX_VARINT_BYTES bytes");
+        require(i < MAX_VARINT_BYTES, "ProtobufLib/decode_varint - uses more than MAX_VARINT_BYTES bytes");
 
         // If all 10 bytes are used, the last byte (most significant 7 bits)
         // must be at most 0000 0001, since 7*9 = 63
         if (i == MAX_VARINT_BYTES - 1) {
-            require(uint8(buf[p + i]) <= 1, "varint uses more than 64 bits");
+            require(uint8(buf[p + i]) <= 1, "ProtobufLib/decode_varint - uses more than 64 bits");
         }
 
         return (p + i + 1, val);
+    }
+
+    /// @notice Decode varint int32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_int32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        // Highest 4 bytes must be 0 if positive
+        if (val >> 63 == 0) {
+            require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_int32 - highest 4 bytes must be 0");
+        }
+
+        return (pos, int32(uint32(val)));
+    }
+
+    /// @notice Decode varint int64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_int64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        return (pos, int64(val));
     }
 
     /// @notice Decode varint uint32.
@@ -94,7 +121,7 @@ library ProtobufLib {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
         // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0, "varint uint32 highest 4 bytes must be 0");
+        require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_uint32 - highest 4 bytes must be 0");
 
         return (pos, uint32(val));
     }
@@ -110,6 +137,37 @@ library ProtobufLib {
         return (pos, val);
     }
 
+    /// @notice Decode varint sint32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sint32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        // Highest 4 bytes must be 0
+        require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_sint32 - highest 4 bytes must be 0");
+
+        // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
+        uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
+
+        return (pos, int32(uint32(zigzag_val)));
+    }
+
+    /// @notice Decode varint sint64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sint64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
+        (uint256 pos, uint64 val) = decode_varint(p, buf);
+
+        // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
+        uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
+
+        return (pos, int64(zigzag_val));
+    }
+
     /// @notice Decode Boolean.
     /// @param p Position
     /// @param buf Buffer
@@ -118,7 +176,7 @@ library ProtobufLib {
     function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {
         (uint256 pos, uint64 val) = decode_varint(p, buf);
 
-        require(val <= 1, "bool is not 0 or 1");
+        require(val <= 1, "ProtobufLib/decode_bool - is not 0 or 1");
 
         if (val == 1) {
             return (pos, true);
@@ -165,6 +223,17 @@ library ProtobufLib {
         return (pos, val);
     }
 
+    /// @notice Decode fixed int64.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sfixed64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
+        (uint256 pos, uint64 val) = decode_bits64(p, buf);
+
+        return (pos, int64(val));
+    }
+
     /// @notice Decode fixed 32-bit int.
     /// @param p Position
     /// @param buf Buffer
@@ -192,6 +261,17 @@ library ProtobufLib {
         (uint256 pos, uint32 val) = decode_bits32(p, buf);
 
         return (pos, val);
+    }
+
+    /// @notice Decode fixed int32.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Decoded int
+    function decode_sfixed32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+        (uint256 pos, uint32 val) = decode_bits32(p, buf);
+
+        return (pos, int32(val));
     }
 
     /// @notice Decode length-delimited field.

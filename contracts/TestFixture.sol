@@ -21,12 +21,28 @@ contract TestFixture {
         return ProtobufLib.decode_varint(p, buf);
     }
 
+    function decode_int32(uint256 p, bytes memory buf) public returns (uint256, int32) {
+        return ProtobufLib.decode_int32(p, buf);
+    }
+
+    function decode_int64(uint256 p, bytes memory buf) public returns (uint256, int64) {
+        return ProtobufLib.decode_int64(p, buf);
+    }
+
     function decode_uint32(uint256 p, bytes memory buf) public returns (uint256, uint32) {
         return ProtobufLib.decode_uint32(p, buf);
     }
 
     function decode_uint64(uint256 p, bytes memory buf) public returns (uint256, uint64) {
         return ProtobufLib.decode_uint64(p, buf);
+    }
+
+    function decode_sint32(uint256 p, bytes memory buf) public returns (uint256, int32) {
+        return ProtobufLib.decode_sint32(p, buf);
+    }
+
+    function decode_sint64(uint256 p, bytes memory buf) public returns (uint256, int64) {
+        return ProtobufLib.decode_sint64(p, buf);
     }
 
     function decode_bool(uint256 p, bytes memory buf) public returns (uint256, bool) {
@@ -45,12 +61,20 @@ contract TestFixture {
         return ProtobufLib.decode_fixed64(p, buf);
     }
 
+    function decode_sfixed64(uint256 p, bytes memory buf) public returns (uint256, int64) {
+        return ProtobufLib.decode_sfixed64(p, buf);
+    }
+
     function decode_bits32(uint256 p, bytes memory buf) public returns (uint256, uint32) {
         return ProtobufLib.decode_bits32(p, buf);
     }
 
     function decode_fixed32(uint256 p, bytes memory buf) public returns (uint256, uint32) {
         return ProtobufLib.decode_fixed32(p, buf);
+    }
+
+    function decode_sfixed32(uint256 p, bytes memory buf) public returns (uint256, int32) {
+        return ProtobufLib.decode_sfixed32(p, buf);
     }
 
     function decode_length_delimited(uint256 p, bytes memory buf) public returns (uint256, bytes memory) {
