@@ -96,4 +96,88 @@ contract TestFixture {
     function decode_packed_repeated(uint256 p, bytes memory buf) public returns (uint256, bytes memory) {
         return ProtobufLib.decode_packed_repeated(p, buf);
     }
+
+    function encode_key(uint64 field_number, uint64 wire_type) public returns (bytes memory) {
+        return ProtobufLib.encode_key(field_number, wire_type);
+    }
+
+    function encode_varint(uint64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_varint(n);
+    }
+
+    function encode_int32(int32 n) public returns (bytes memory) {
+        return ProtobufLib.encode_int32(n);
+    }
+
+    function encode_int64(int64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_int64(n);
+    }
+
+    function encode_uint32(uint32 n) public returns (bytes memory) {
+        return ProtobufLib.encode_uint32(n);
+    }
+
+    function encode_uint64(uint64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_uint64(n);
+    }
+
+    function encode_sint32(int32 n) public returns (bytes memory) {
+        return ProtobufLib.encode_sint32(n);
+    }
+
+    function encode_sint64(int64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_sint64(n);
+    }
+
+    function encode_bool(bool b) public returns (bytes memory) {
+        return ProtobufLib.encode_bool(b);
+    }
+
+    function encode_enum(int32 n) public returns (bytes memory) {
+        return ProtobufLib.encode_enum(n);
+    }
+
+    function encode_bits64(uint64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_bits64(n);
+    }
+
+    function encode_fixed64(uint64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_fixed64(n);
+    }
+
+    function encode_sfixed64(int64 n) public returns (bytes memory) {
+        return ProtobufLib.encode_sfixed64(n);
+    }
+
+    function encode_bits32(uint32 n) public returns (bytes memory) {
+        return ProtobufLib.encode_bits32(n);
+    }
+
+    function encode_fixed32(uint32 n) public returns (bytes memory) {
+        return ProtobufLib.encode_fixed32(n);
+    }
+
+    function encode_sfixed32(int32 n) public returns (bytes memory) {
+        return ProtobufLib.encode_sfixed32(n);
+    }
+
+    function encode_length_delimited(bytes memory b) public returns (bytes memory) {
+        return ProtobufLib.encode_length_delimited(b);
+    }
+
+    function encode_string(string memory s) public returns (bytes memory) {
+        return ProtobufLib.encode_string(s);
+    }
+
+    function encode_bytes(bytes memory b) public returns (bytes memory) {
+        return ProtobufLib.encode_bytes(b);
+    }
+
+    function encode_embedded_message(bytes memory m) public returns (bytes memory) {
+        return ProtobufLib.encode_embedded_message(m);
+    }
+
+    function encode_packed_repeated(bytes memory b) public returns (bytes memory) {
+        return ProtobufLib.encode_packed_repeated(b);
+    }
 }

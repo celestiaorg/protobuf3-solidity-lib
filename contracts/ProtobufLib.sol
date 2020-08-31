@@ -339,7 +339,223 @@ library ProtobufLib {
     // Encoding
     ////////////////////////////////////
 
-    ////////////////////////////////////
-    // Helpers
-    ////////////////////////////////////
+    /// @notice Encode key.
+    /// @dev https://developers.google.com/protocol-buffers/docs/encoding#structure
+    /// @param field_number Field number
+    /// @param wire_type Wire type
+    /// @return Marshaled bytes
+    function encode_key(uint64 field_number, uint64 wire_type) internal pure returns (bytes memory) {
+        uint64 key = (field_number << 3) | wire_type;
+
+        bytes memory buf = encode_varint(key);
+
+        return buf;
+    }
+
+    /// @notice Encode varint.
+    /// @dev https://developers.google.com/protocol-buffers/docs/encoding#varints
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_varint(uint64 n) internal pure returns (bytes memory) {
+        // Count the number of groups of 7 bits
+        // We need this pre-processing step since Solidity doesn't allow dynamic memory resizing
+        uint64 tmp = n;
+        uint64 num_bytes = 1;
+        while (tmp > 0x7F) {
+            tmp = tmp >> 7;
+            num_bytes += 1;
+        }
+
+        bytes memory buf = new bytes(num_bytes);
+
+        tmp = n;
+        for (uint256 i = 0; i < num_bytes; i++) {
+            // Set the first bit in the byte for each group of 7 bits
+            buf[i] = bytes1(0x80 | uint8(tmp & 0x7F));
+            tmp = tmp >> 7;
+        }
+        // Unset the first bit of the last byte
+        buf[num_bytes - 1] &= 0x7F;
+
+        return buf;
+    }
+
+    /// @notice Encode varint int32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_int32(int32 n) internal pure returns (bytes memory) {
+        return encode_varint(uint64(n));
+    }
+
+    /// @notice Decode varint int64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_int64(int64 n) internal pure returns (bytes memory) {
+        return encode_varint(uint64(n));
+    }
+
+    /// @notice Encode varint uint32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_uint32(uint32 n) internal pure returns (bytes memory) {
+        return encode_varint(n);
+    }
+
+    /// @notice Encode varint uint64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_uint64(uint64 n) internal pure returns (bytes memory) {
+        return encode_varint(n);
+    }
+
+    /// @notice Encode varint sint32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sint32(int32 n) internal pure returns (bytes memory) {
+        // https://developers.google.com/protocol-buffers/docs/encoding#signed_integers
+        uint32 mask = 0;
+        if (n < 0) {
+            mask -= 1;
+        }
+        uint32 zigzag_val = (uint32(n) << 1) ^ mask;
+
+        return encode_varint(zigzag_val);
+    }
+
+    /// @notice Encode varint sint64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sint64(int64 n) internal pure returns (bytes memory) {
+        // https://developers.google.com/protocol-buffers/docs/encoding#signed_integers
+        uint64 mask = 0;
+        if (n < 0) {
+            mask -= 1;
+        }
+        uint64 zigzag_val = (uint64(n) << 1) ^ mask;
+
+        return encode_varint(zigzag_val);
+    }
+
+    /// @notice Encode Boolean.
+    /// @param b Boolean
+    /// @return Marshaled bytes
+    function encode_bool(bool b) internal pure returns (bytes memory) {
+        uint64 n = b ? 1 : 0;
+
+        return encode_varint(n);
+    }
+
+    /// @notice Encode enumeration.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_enum(int32 n) internal pure returns (bytes memory) {
+        return encode_int32(n);
+    }
+
+    /// @notice Encode fixed 64-bit int.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_bits64(uint64 n) internal pure returns (bytes memory) {
+        bytes memory buf = new bytes(8);
+
+        uint64 tmp = n;
+        for (uint256 i = 0; i < 8; i++) {
+            // Little endian
+            buf[i] = bytes1(uint8(tmp & 0xFF));
+            tmp = tmp >> 8;
+        }
+
+        return buf;
+    }
+
+    /// @notice Encode fixed uint64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_fixed64(uint64 n) internal pure returns (bytes memory) {
+        return encode_bits64(n);
+    }
+
+    /// @notice Encode fixed int64.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sfixed64(int64 n) internal pure returns (bytes memory) {
+        return encode_bits64(uint64(n));
+    }
+
+    /// @notice Decode fixed 32-bit int.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_bits32(uint32 n) internal pure returns (bytes memory) {
+        bytes memory buf = new bytes(4);
+
+        uint64 tmp = n;
+        for (uint256 i = 0; i < 4; i++) {
+            // Little endian
+            buf[i] = bytes1(uint8(tmp & 0xFF));
+            tmp = tmp >> 8;
+        }
+
+        return buf;
+    }
+
+    /// @notice Encode fixed uint32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_fixed32(uint32 n) internal pure returns (bytes memory) {
+        return encode_bits32(n);
+    }
+
+    /// @notice Encode fixed int32.
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_sfixed32(int32 n) internal pure returns (bytes memory) {
+        return encode_bits32(uint32(n));
+    }
+
+    /// @notice Encode length-delimited field.
+    /// @param b Bytes
+    /// @return Marshaled bytes
+    function encode_length_delimited(bytes memory b) internal pure returns (bytes memory) {
+        // Length-delimited fields begin with a varint of the number of bytes that follow
+        bytes memory length_buf = encode_uint64(uint64(b.length));
+        bytes memory buf = new bytes(b.length + length_buf.length);
+
+        for (uint256 i = 0; i < length_buf.length; i++) {
+            buf[i] = length_buf[i];
+        }
+
+        for (uint256 i = 0; i < b.length; i++) {
+            buf[i + length_buf.length] = b[i];
+        }
+
+        return buf;
+    }
+
+    /// @notice Encode string.
+    /// @param s String
+    /// @return Marshaled bytes
+    function encode_string(string memory s) internal pure returns (bytes memory) {
+        return encode_length_delimited(bytes(s));
+    }
+
+    /// @notice Encode bytes array.
+    /// @param b Bytes
+    /// @return Marshaled bytes
+    function encode_bytes(bytes memory b) internal pure returns (bytes memory) {
+        return encode_length_delimited(b);
+    }
+
+    /// @notice Encode embedded message.
+    /// @param m Message
+    /// @return Marshaled bytes
+    function encode_embedded_message(bytes memory m) internal pure returns (bytes memory) {
+        return encode_length_delimited(m);
+    }
+
+    /// @notice Encode packed repeated field.
+    /// @param b Bytes
+    /// @return Marshaled bytes
+    function encode_packed_repeated(bytes memory b) internal pure returns (bytes memory) {
+        return encode_length_delimited(b);
+    }
 }
