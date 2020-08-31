@@ -558,8 +558,4 @@ library ProtobufLib {
     function encode_packed_repeated(bytes memory b) internal pure returns (bytes memory) {
         return encode_length_delimited(b);
     }
-
-    ////////////////////////////////////
-    // Helpers
-    ////////////////////////////////////
 }
