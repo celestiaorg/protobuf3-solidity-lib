@@ -330,7 +330,31 @@ contract("TestFixture", async (accounts) => {
     await instance.decode_bool(1, "0x" + encoded);
   });
 
-  // TODO test enums
+  it("[decode] enum", async () => {
+    const instance = await TestFixture.deployed();
+
+    const EnumStruct = {
+      ONE: 1,
+      TWO: 2,
+      THREE: 3,
+    };
+
+    const v = EnumStruct.THREE;
+
+    const Message = new protobuf.Type("Message")
+      .add(new protobuf.Field("field", 1, "bool"))
+      .add(new protobuf.Field("field2", 2, "Enum"))
+      .add(new protobuf.Enum("Enum", EnumStruct));
+    const message = Message.create({ field: 1, field2: v });
+    const encoded = Message.encode(message).finish().toString("hex");
+
+    const result = await instance.decode_enum.call(3, "0x" + encoded);
+    const { 0: pos, 1: val } = result;
+    assert.equal(pos, encoded.length / 2);
+    assert.equal(val, v);
+
+    await instance.decode_enum(3, "0x" + encoded);
+  });
 
   it("[decode] bits64", async () => {
     const instance = await TestFixture.deployed();
@@ -550,8 +574,6 @@ contract("TestFixture", async (accounts) => {
     const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64", "repeated"));
     const message = Message.create({ field: v });
     const encoded = Message.encode(message).finish().toString("hex");
-
-    console.log(encoded);
 
     const result = await instance.decode_packed_repeated.call(1, "0x" + encoded);
     const { 0: pos, 1: val } = result;
