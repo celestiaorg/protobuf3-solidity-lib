@@ -855,7 +855,7 @@ contract("TestFixture", async (accounts) => {
     const encoded = Message.encode(message).finish().toString("hex");
 
     const result = await instance.encode_enum.call(v);
-    assert.equal(result, "0x" + encoded.slice(2));
+    assert.equal(result, "0x" + encoded.slice(6));
 
     await instance.encode_enum(v);
   });
