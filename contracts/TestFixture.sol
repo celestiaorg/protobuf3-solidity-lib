@@ -49,7 +49,7 @@ contract TestFixture {
         return ProtobufLib.decode_bool(p, buf);
     }
 
-    function decode_enum(uint256 p, bytes memory buf) public returns (uint256, uint64) {
+    function decode_enum(uint256 p, bytes memory buf) public returns (uint256, int32) {
         return ProtobufLib.decode_enum(p, buf);
     }
 
