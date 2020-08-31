@@ -1033,6 +1033,8 @@ contract("TestFixture", async (accounts) => {
     const EmbeddedMessage = new protobuf.Type("EmbeddedMessage").add(new protobuf.Field("field", 1, "uint64"));
     const embeddedMessage = EmbeddedMessage.create({ field: 300 });
 
+    const encodedEmbeddedMessage = EmbeddedMessage.encode(embeddedMessage).finish().toString("hex");
+
     const Message = new protobuf.Type("Message")
       .add(new protobuf.Field("field", 1, "EmbeddedMessage"))
       .add(EmbeddedMessage);
@@ -1040,10 +1042,10 @@ contract("TestFixture", async (accounts) => {
 
     const encoded = Message.encode(message).finish().toString("hex");
 
-    const result = await instance.encode_embedded_message.call(v);
-    assert.equal(result, "0x" + EmbeddedMessage.encode(embeddedMessage).finish().toString("hex").slice(2));
+    const result = await instance.encode_embedded_message.call("0x" + encodedEmbeddedMessage.slice(2));
+    assert.equal(result, "0x" + encoded.slice(4));
 
-    await instance.encode_embedded_message(v);
+    // await instance.encode_embedded_message(v);
   });
 
   it("[encode] packed repeated", async () => {
@@ -1055,9 +1057,9 @@ contract("TestFixture", async (accounts) => {
     const message = Message.create({ field: v });
     const encoded = Message.encode(message).finish().toString("hex");
 
-    const result = await instance.encode_packed_repeated.call(v);
+    const result = await instance.encode_packed_repeated.call("0x" + encoded.slice(4));
     assert.equal(result, "0x" + encoded.slice(2));
 
-    await instance.encode_packed_repeated(v);
+    await instance.encode_packed_repeated("0x" + encoded.slice(4));
   });
 });
