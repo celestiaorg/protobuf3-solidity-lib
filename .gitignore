@@ -105,3 +105,6 @@ dist
 
 # Truffle build directory
 build/
+
+# solidity-coverage output
+coverage.json
