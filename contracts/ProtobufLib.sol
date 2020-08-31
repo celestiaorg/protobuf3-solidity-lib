@@ -362,7 +362,7 @@ library ProtobufLib {
         uint64 tmp = n;
         uint64 num_bytes = 1;
         while (tmp > 0x7F) {
-            tmp >> 7;
+            tmp = tmp >> 7;
             num_bytes += 1;
         }
 
@@ -372,7 +372,7 @@ library ProtobufLib {
         for (uint256 i = 0; i < num_bytes; i++) {
             // Set the first bit in the byte for each group of 7 bits
             buf[i] = bytes1(0x80 | uint8(tmp & 0x7F));
-            tmp >> 7;
+            tmp = tmp >> 7;
         }
         // Unset the first bit of the last byte
         buf[num_bytes - 1] &= 0x7F;
