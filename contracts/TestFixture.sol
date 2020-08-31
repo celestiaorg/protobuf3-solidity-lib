@@ -92,4 +92,15 @@ contract TestFixture {
     function decode_embedded_message(uint256 p, bytes memory buf) public returns (uint256, bytes memory) {
         return ProtobufLib.decode_embedded_message(p, buf);
     }
+
+    function decode_packed_repeated(uint256 p, bytes memory buf)
+        public
+        returns (
+            uint256,
+            bytes memory,
+            bytes memory
+        )
+    {
+        return ProtobufLib.decode_packed_repeated(p, buf);
+    }
 }

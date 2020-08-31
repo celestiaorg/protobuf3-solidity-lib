@@ -324,6 +324,37 @@ library ProtobufLib {
         return (pos, field);
     }
 
+    /// @notice Decode packed repeated field.
+    /// @param p Position
+    /// @param buf Buffer
+    /// @return New position
+    /// @return Key
+    /// @return Field bytes
+    function decode_packed_repeated(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            uint256,
+            bytes memory,
+            bytes memory
+        )
+    {
+        // Length-delimited fields begin with a varint of the number of bytes that follow
+        (uint256 pos, uint64 size) = decode_varint(p, buf);
+
+        // The first byte of packed repeated fields is the key, so slice it off
+        bytes memory key = new bytes(1);
+        key[0] = buf[pos + 1];
+
+        // Save the remaining bytes as the field bytes
+        bytes memory field = new bytes(size - 1);
+        for (uint256 i = 1; i < size; i++) {
+            field[i] = buf[pos + i];
+        }
+
+        return (pos + size, key, field);
+    }
+
     ////////////////////////////////////
     // Encoding
     ////////////////////////////////////
