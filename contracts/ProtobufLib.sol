@@ -339,6 +339,47 @@ library ProtobufLib {
     // Encoding
     ////////////////////////////////////
 
+    /// @notice Encode key.
+    /// @dev https://developers.google.com/protocol-buffers/docs/encoding#structure
+    /// @param field_number Field number
+    /// @param wire_type Wire type
+    /// @return Marshaled bytes
+    function encode_key(uint64 field_number, uint64 wire_type) internal pure returns (bytes memory) {
+        uint64 key = (field_number << 3) | wire_type;
+
+        bytes memory buf = encode_varint(key);
+
+        return buf;
+    }
+
+    /// @notice Encode varint.
+    /// @dev https://developers.google.com/protocol-buffers/docs/encoding#varints
+    /// @param n Number
+    /// @return Marshaled bytes
+    function encode_varint(uint64 n) internal pure returns (bytes memory) {
+        // Count the number of groups of 7 bits
+        // We need this pre-processing step since Solidity doesn't allow dynamic memory resizing
+        uint64 tmp = n;
+        uint64 num_bytes = 1;
+        while (tmp > 0x7F) {
+            tmp >> 7;
+            num_bytes += 1;
+        }
+
+        bytes memory buf = new bytes(num_bytes);
+
+        tmp = n;
+        for (uint256 i = 0; i < num_bytes; i++) {
+            // Set the first bit in the byte for each group of 7 bits
+            buf[i] = bytes1(0x80 | uint8(tmp & 0x7F));
+            tmp >> 7;
+        }
+        // Unset the first bit of the last byte
+        buf[num_bytes - 1] &= 0x7F;
+
+        return buf;
+    }
+
     ////////////////////////////////////
     // Helpers
     ////////////////////////////////////
