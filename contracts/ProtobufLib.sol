@@ -5,9 +5,9 @@ library ProtobufLib {
     /// @notice Protobuf wire types.
     enum WireType { Varint, Bits64, LengthDelimited, StartGroup, EndGroup, Bits32, WIRE_TYPE_MAX }
 
-    /// @notice Maximum number of bytes for a varint.
-    /// @notice 64 bits, in groups of base-128 (7 bits).
-    uint256 public constant MAX_VARINT_BYTES = 10;
+    /// @dev Maximum number of bytes for a varint.
+    /// @dev 64 bits, in groups of base-128 (7 bits).
+    uint256 internal constant MAX_VARINT_BYTES = 10;
 
     ////////////////////////////////////
     // Decoding
