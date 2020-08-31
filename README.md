@@ -60,7 +60,7 @@ npm run test
 | `fixed64`           |   ✔️   |   ❌   |
 | `sfixed64`          |   ✔️   |   ❌   |
 | `bool`              |   ✔️   |   ❌   |
-| enum                |   ✔️   |   ❌   |
+| enum                |   ❓   |   ❌   |
 | `string`            |   ✔️   |   ❌   |
 | `bytes`             |   ✔️   |   ❌   |
 | embedded messages   |   ✔️   |   ❌   |
