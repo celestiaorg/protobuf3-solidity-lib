@@ -73,8 +73,12 @@ library ProtobufLib {
         uint64 val;
         uint256 i;
 
-        // TODO add a check for array bounds
         for (i = 0; i < MAX_VARINT_BYTES; i++) {
+            // Check that index is within bounds
+            if (i + p >= buf.length) {
+                return (false, p, 0);
+            }
+
             // Get byte at offset
             uint8 b = uint8(buf[p + i]);
 
@@ -340,7 +344,11 @@ library ProtobufLib {
     {
         uint64 val;
 
-        // TODO add a check for array bounds
+        // Check that index is within bounds
+        if (8 + p > buf.length) {
+            return (false, p, 0);
+        }
+
         for (uint256 i = 0; i < 8; i++) {
             uint8 b = uint8(buf[p + i]);
 
@@ -414,7 +422,11 @@ library ProtobufLib {
     {
         uint32 val;
 
-        // TODO add a check for array bounds
+        // Check that index is within bounds
+        if (4 + p > buf.length) {
+            return (false, p, 0);
+        }
+
         for (uint256 i = 0; i < 4; i++) {
             uint8 b = uint8(buf[p + i]);
 
@@ -492,7 +504,8 @@ library ProtobufLib {
             return (false, pos, 0);
         }
 
-        if (size > buf.length - pos) {
+        // Check that index is within bounds
+        if (size + pos > buf.length) {
             return (false, pos, 0);
         }
 
@@ -519,7 +532,6 @@ library ProtobufLib {
             return (false, pos, "");
         }
 
-        // TODO add a check for array bounds
         bytes memory field = new bytes(size);
         for (uint256 i = 0; i < size; i++) {
             field[i] = buf[pos + i];
