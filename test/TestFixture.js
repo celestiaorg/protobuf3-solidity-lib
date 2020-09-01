@@ -14,6 +14,15 @@ contract("protobufjs", async (accounts) => {
       // 300 -> ac 02
       assert.equal(encoded, "08ac02");
     });
+
+    it("protobufjs not bijective", async () => {
+      // Show protobufjs is not bijective
+      const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
+      const decoded = Message.decode(Buffer.from("08FFFFFFFFFFFFFFFFFF7F", "hex"));
+      const field = decoded.toJSON().field;
+
+      assert.equal(field, "18446744073709551615");
+    });
   });
 });
 
