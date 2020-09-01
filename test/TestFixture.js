@@ -638,7 +638,7 @@ contract("TestFixture", async (accounts) => {
       it("uint64 too large", async () => {
         const instance = await TestFixture.deployed();
 
-        const result = await instance.decode_uint64.call(1, "0x08FFFFFFFFFFFFFFFFFFFF01");
+        const result = await instance.decode_uint64.call(0, "0xFFFFFFFFFFFFFFFFFFFF01");
         const { 0: success, 1: pos, 2: val } = result;
         assert.equal(success, false);
       });
