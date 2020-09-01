@@ -538,8 +538,8 @@ contract("TestFixture", async (accounts) => {
       const result = await instance.decode_length_delimited.call(1, "0x" + encoded);
       const { 0: success, 1: pos, 2: val } = result;
       assert.equal(success, true);
-      assert.equal(pos, encoded.length / 2);
-      assert.equal(val, "0x" + v.toString("hex"));
+      assert.equal(pos, 2);
+      assert.equal(val, encoded.length / 2 - 2);
 
       await instance.decode_length_delimited(1, "0x" + encoded);
     });
@@ -574,8 +574,8 @@ contract("TestFixture", async (accounts) => {
       const result = await instance.decode_bytes.call(1, "0x" + encoded);
       const { 0: success, 1: pos, 2: val } = result;
       assert.equal(success, true);
-      assert.equal(pos, encoded.length / 2);
-      assert.equal(val, "0x" + v.toString("hex"));
+      assert.equal(pos, 2);
+      assert.equal(val, encoded.length / 2 - 2);
 
       await instance.decode_bytes(1, "0x" + encoded);
     });
@@ -598,8 +598,8 @@ contract("TestFixture", async (accounts) => {
       const result = await instance.decode_embedded_message.call(1, "0x" + encoded);
       const { 0: success, 1: pos, 2: val } = result;
       assert.equal(success, true);
-      assert.equal(pos, encoded.length / 2);
-      assert.equal(val, "0x" + EmbeddedMessage.encode(embeddedMessage).finish().toString("hex"));
+      assert.equal(pos, 2);
+      assert.equal(val, encoded.length / 2 - 2);
 
       await instance.decode_embedded_message(1, "0x" + encoded);
     });
@@ -616,8 +616,8 @@ contract("TestFixture", async (accounts) => {
       const result = await instance.decode_packed_repeated.call(1, "0x" + encoded);
       const { 0: success, 1: pos, 2: val } = result;
       assert.equal(success, true);
-      assert.equal(pos, encoded.length / 2);
-      assert.equal(val, "0x" + encoded.slice(4));
+      assert.equal(pos, 2);
+      assert.equal(val, encoded.length / 2 - 2);
 
       await instance.decode_packed_repeated(1, "0x" + encoded);
     });
