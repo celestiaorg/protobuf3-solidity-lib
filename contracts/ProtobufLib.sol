@@ -525,14 +525,14 @@ library ProtobufLib {
             field[i] = buf[pos + i];
         }
 
-        return (true, pos, string(field));
+        return (true, pos + size, string(field));
     }
 
     /// @notice Decode bytes array.
     /// @param p Position
     /// @param buf Buffer
     /// @return Success
-    /// @return New position
+    /// @return New position (after size)
     /// @return Size in bytes
     function decode_bytes(uint256 p, bytes memory buf)
         internal
@@ -550,7 +550,7 @@ library ProtobufLib {
     /// @param p Position
     /// @param buf Buffer
     /// @return Success
-    /// @return New position
+    /// @return New position (after size)
     /// @return Size in bytes
     function decode_embedded_message(uint256 p, bytes memory buf)
         internal
@@ -568,6 +568,7 @@ library ProtobufLib {
     /// @param p Position
     /// @param buf Buffer
     /// @return Success
+    /// @return New position (after size)
     /// @return Size in bytes
     function decode_packed_repeated(uint256 p, bytes memory buf)
         internal
