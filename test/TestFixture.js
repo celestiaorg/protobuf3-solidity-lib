@@ -674,6 +674,170 @@ contract("TestFixture", async (accounts) => {
         const { 0: success, 1: pos, 2: field, 3: type } = result;
         assert.equal(success, false);
       });
+
+      // TODO varint tests
+
+      it("int32 varint invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_int32.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("int32 high bytes nonzero", async () => {
+        const instance = await TestFixture.deployed();
+
+        const v = "4294967296";
+
+        const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
+        const message = Message.create({ field: v });
+        const encoded = Message.encode(message).finish().toString("hex");
+
+        const result = await instance.decode_int32.call(1, "0x" + encoded);
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("int64 varint invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_int64.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("uint32 varint invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_uint32.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("sint32 varint invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_sint32.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("sint32 high bytes nonzero", async () => {
+        const instance = await TestFixture.deployed();
+
+        const v = "4294967296";
+
+        const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
+        const message = Message.create({ field: v });
+        const encoded = Message.encode(message).finish().toString("hex");
+
+        const result = await instance.decode_sint32.call(1, "0x" + encoded);
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("sint64 varint invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_sint64.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("bool varint invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_bool.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("bool not 0 or 1", async () => {
+        const instance = await TestFixture.deployed();
+
+        const v = 2;
+
+        const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
+        const message = Message.create({ field: v });
+        const encoded = Message.encode(message).finish().toString("hex");
+
+        const result = await instance.decode_bool.call(1, "0x" + encoded);
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("bits64 too short", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_bits64.call(0, "0x00");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("fixed64 bits64 invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_fixed64.call(0, "0x00");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("sfixed64 bits64 invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_sfixed64.call(0, "0x00");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("bits32 too short", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_bits32.call(0, "0x00");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("fixed32 bits32 invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_fixed32.call(0, "0x00");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("sfixed32 bits32 invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_sfixed32.call(0, "0x00");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("length-delimited varint invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_length_delimited.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("length-delimited out of bounds", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_length_delimited.call(0, "0xAC02");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("string length-delimited invalid", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_string.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
     });
   });
 
