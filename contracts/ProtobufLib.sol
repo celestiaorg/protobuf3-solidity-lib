@@ -91,6 +91,7 @@ library ProtobufLib {
 
             // Mask to get keep going bit: 1000 0000
             if (b & 0x80 == 0) {
+                // [STRICT]
                 // Check for trailing zeroes if more than one byte is used
                 // (the value 0 still uses one byte)
                 if (i > 0 && v == 0) {
@@ -106,6 +107,7 @@ library ProtobufLib {
             return (false, p, 0);
         }
 
+        // [STRICT]
         // If all 10 bytes are used, the last byte (most significant 7 bits)
         // must be at most 0000 0001, since 7*9 = 63
         if (i == MAX_VARINT_BYTES - 1) {
@@ -137,6 +139,7 @@ library ProtobufLib {
             return (false, pos, 0);
         }
 
+        // [STRICT]
         // Highest 4 bytes must be 0 if positive
         if (val >> 63 == 0) {
             if (val & 0xFFFFFFFF00000000 != 0) {
@@ -190,6 +193,7 @@ library ProtobufLib {
             return (false, pos, 0);
         }
 
+        // [STRICT]
         // Highest 4 bytes must be 0
         if (val & 0xFFFFFFFF00000000 != 0) {
             return (false, pos, 0);
@@ -241,6 +245,7 @@ library ProtobufLib {
             return (false, pos, 0);
         }
 
+        // [STRICT]
         // Highest 4 bytes must be 0
         if (val & 0xFFFFFFFF00000000 != 0) {
             return (false, pos, 0);
@@ -298,6 +303,7 @@ library ProtobufLib {
             return (false, pos, false);
         }
 
+        // [STRICT]
         // Value must be 0 or 1
         if (val > 1) {
             return (false, pos, false);
