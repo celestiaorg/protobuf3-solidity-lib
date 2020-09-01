@@ -91,8 +91,9 @@ library ProtobufLib {
 
             // Mask to get keep going bit: 1000 0000
             if (b & 0x80 == 0) {
-                // Check for trailing zeroes
-                if (v == 0) {
+                // Check for trailing zeroes if more than one byte is used
+                // (the value 0 still uses one byte)
+                if (i > 0 && v == 0) {
                     return (false, p, 0);
                 }
 
