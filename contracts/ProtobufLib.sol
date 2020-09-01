@@ -17,6 +17,7 @@ library ProtobufLib {
     /// @dev https://developers.google.com/protocol-buffers/docs/encoding#structure
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Field number
     /// @return Wire type
@@ -24,6 +25,7 @@ library ProtobufLib {
         internal
         pure
         returns (
+            bool,
             uint256,
             uint64,
             WireType
@@ -31,31 +33,47 @@ library ProtobufLib {
     {
         // The key is a varint with encoding
         // (field_number << 3) | wire_type
-        (uint256 pos, uint64 key) = decode_varint(p, buf);
+        (bool success, uint256 pos, uint64 key) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0, WireType.WIRE_TYPE_MAX);
+        }
+
         uint64 field_number = key >> 3;
         uint64 wire_type_val = key & 0x07;
-        require(wire_type_val < uint64(WireType.WIRE_TYPE_MAX), "ProtobufLib/decode_key - wire type out of bounds");
+        // Check that wire type is bounded
+        if (wire_type_val >= uint64(WireType.WIRE_TYPE_MAX)) {
+            return (false, pos, 0, WireType.WIRE_TYPE_MAX);
+        }
         WireType wire_type = WireType(wire_type_val);
 
         // Start and end group types are deprecated, so forbid them
-        require(
-            wire_type != WireType.StartGroup && wire_type != WireType.EndGroup,
-            "ProtobufLib/decode_key - wire type must not be deprecated"
-        );
+        if (wire_type == WireType.StartGroup || wire_type == WireType.EndGroup) {
+            return (false, pos, 0, WireType.WIRE_TYPE_MAX);
+        }
 
-        return (pos, field_number, wire_type);
+        return (true, pos, field_number, wire_type);
     }
 
     /// @notice Decode varint.
     /// @dev https://developers.google.com/protocol-buffers/docs/encoding#varints
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_varint(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+    function decode_varint(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
         uint64 val;
         uint256 i;
 
+        // TODO add a check for array bounds
         for (i = 0; i < MAX_VARINT_BYTES; i++) {
             // Get byte at offset
             uint8 b = uint8(buf[p + i]);
@@ -69,139 +87,260 @@ library ProtobufLib {
 
             // Mask to get keep going bit: 1000 0000
             if (b & 0x80 == 0) {
-                require(v != 0, "ProtobufLib/decode_varint - has trailing zeroes");
+                // Check for trailing zeroes
+                if (v == 0) {
+                    return (false, p, 0);
+                }
+
                 break;
             }
         }
 
-        require(i < MAX_VARINT_BYTES, "ProtobufLib/decode_varint - uses more than MAX_VARINT_BYTES bytes");
+        // Check that at most MAX_VARINT_BYTES are used
+        if (i >= MAX_VARINT_BYTES) {
+            return (false, p, 0);
+        }
 
         // If all 10 bytes are used, the last byte (most significant 7 bits)
         // must be at most 0000 0001, since 7*9 = 63
         if (i == MAX_VARINT_BYTES - 1) {
-            require(uint8(buf[p + i]) <= 1, "ProtobufLib/decode_varint - uses more than 64 bits");
+            if (uint8(buf[p + i]) > 1) {
+                return (false, p, 0);
+            }
         }
 
-        return (p + i + 1, val);
+        return (true, p + i + 1, val);
     }
 
     /// @notice Decode varint int32.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_int32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
-        (uint256 pos, uint64 val) = decode_varint(p, buf);
+    function decode_int32(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            int32
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
         // Highest 4 bytes must be 0 if positive
         if (val >> 63 == 0) {
-            require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_int32 - highest 4 bytes must be 0");
+            if (val & 0xFFFFFFFF00000000 != 0) {
+                return (false, pos, 0);
+            }
         }
 
-        return (pos, int32(uint32(val)));
+        return (true, pos, int32(uint32(val)));
     }
 
     /// @notice Decode varint int64.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_int64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
-        (uint256 pos, uint64 val) = decode_varint(p, buf);
+    function decode_int64(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            int64
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
-        return (pos, int64(val));
+        return (true, pos, int64(val));
     }
 
     /// @notice Decode varint uint32.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_uint32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
-        (uint256 pos, uint64 val) = decode_varint(p, buf);
+    function decode_uint32(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint32
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
         // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_uint32 - highest 4 bytes must be 0");
+        if (val & 0xFFFFFFFF00000000 != 0) {
+            return (false, pos, 0);
+        }
 
-        return (pos, uint32(val));
+        return (true, pos, uint32(val));
     }
 
     /// @notice Decode varint uint64.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_uint64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
-        (uint256 pos, uint64 val) = decode_varint(p, buf);
+    function decode_uint64(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
-        return (pos, val);
+        return (true, pos, val);
     }
 
     /// @notice Decode varint sint32.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_sint32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
-        (uint256 pos, uint64 val) = decode_varint(p, buf);
+    function decode_sint32(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            int32
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
         // Highest 4 bytes must be 0
-        require(val & 0xFFFFFFFF00000000 == 0, "ProtobufLib/decode_sint32 - highest 4 bytes must be 0");
+        if (val & 0xFFFFFFFF00000000 != 0) {
+            return (false, pos, 0);
+        }
 
         // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
         uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
 
-        return (pos, int32(uint32(zigzag_val)));
+        return (true, pos, int32(uint32(zigzag_val)));
     }
 
     /// @notice Decode varint sint64.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_sint64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
-        (uint256 pos, uint64 val) = decode_varint(p, buf);
+    function decode_sint64(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            int64
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
         // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
         uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
 
-        return (pos, int64(zigzag_val));
+        return (true, pos, int64(zigzag_val));
     }
 
     /// @notice Decode Boolean.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded bool
-    function decode_bool(uint256 p, bytes memory buf) internal pure returns (uint256, bool) {
-        (uint256 pos, uint64 val) = decode_varint(p, buf);
-
-        require(val <= 1, "ProtobufLib/decode_bool - is not 0 or 1");
-
-        if (val == 1) {
-            return (pos, true);
+    function decode_bool(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            bool
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, false);
         }
 
-        return (pos, false);
+        // Value must be 0 or 1
+        if (val > 1) {
+            return (false, pos, false);
+        }
+
+        if (val == 1) {
+            return (true, pos, true);
+        }
+
+        return (true, pos, false);
     }
 
     /// @notice Decode enumeration.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded enum as raw int
-    function decode_enum(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
+    function decode_enum(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            int32
+        )
+    {
         return decode_int32(p, buf);
     }
 
     /// @notice Decode fixed 64-bit int.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_bits64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+    function decode_bits64(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
         uint64 val;
 
+        // TODO add a check for array bounds
         for (uint256 i = 0; i < 8; i++) {
             uint8 b = uint8(buf[p + i]);
 
@@ -209,39 +348,73 @@ library ProtobufLib {
             val |= uint64(b) << uint64(i * 8);
         }
 
-        return (p + 8, val);
+        return (true, p + 8, val);
     }
 
     /// @notice Decode fixed uint64.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_fixed64(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
-        (uint256 pos, uint64 val) = decode_bits64(p, buf);
+    function decode_fixed64(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_bits64(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
-        return (pos, val);
+        return (true, pos, val);
     }
 
     /// @notice Decode fixed int64.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_sfixed64(uint256 p, bytes memory buf) internal pure returns (uint256, int64) {
-        (uint256 pos, uint64 val) = decode_bits64(p, buf);
+    function decode_sfixed64(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            int64
+        )
+    {
+        (bool success, uint256 pos, uint64 val) = decode_bits64(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
-        return (pos, int64(val));
+        return (true, pos, int64(val));
     }
 
     /// @notice Decode fixed 32-bit int.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_bits32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
+    function decode_bits32(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint32
+        )
+    {
         uint32 val;
 
+        // TODO add a check for array bounds
         for (uint256 i = 0; i < 4; i++) {
             uint8 b = uint8(buf[p + i]);
 
@@ -249,82 +422,166 @@ library ProtobufLib {
             val |= uint32(b) << uint32(i * 8);
         }
 
-        return (p + 4, val);
+        return (true, p + 4, val);
     }
 
     /// @notice Decode fixed uint32.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_fixed32(uint256 p, bytes memory buf) internal pure returns (uint256, uint32) {
-        (uint256 pos, uint32 val) = decode_bits32(p, buf);
+    function decode_fixed32(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint32
+        )
+    {
+        (bool success, uint256 pos, uint32 val) = decode_bits32(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
-        return (pos, val);
+        return (true, pos, val);
     }
 
     /// @notice Decode fixed int32.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Decoded int
-    function decode_sfixed32(uint256 p, bytes memory buf) internal pure returns (uint256, int32) {
-        (uint256 pos, uint32 val) = decode_bits32(p, buf);
+    function decode_sfixed32(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            int32
+        )
+    {
+        (bool success, uint256 pos, uint32 val) = decode_bits32(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
-        return (pos, int32(val));
+        return (true, pos, int32(val));
     }
 
     /// @notice Decode length-delimited field.
     /// @param p Position
     /// @param buf Buffer
-    /// @return New position
+    /// @return Success
+    /// @return New position (after size)
     /// @return Size in bytes
-    function decode_length_delimited(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+    function decode_length_delimited(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
         // Length-delimited fields begin with a varint of the number of bytes that follow
-        (uint256 pos, uint64 size) = decode_varint(p, buf);
+        (bool success, uint256 pos, uint64 size) = decode_varint(p, buf);
+        if (!success) {
+            return (false, pos, 0);
+        }
 
-        return (pos, size);
+        if (size > buf.length - pos) {
+            return (false, pos, 0);
+        }
+
+        return (true, pos, size);
     }
 
     /// @notice Decode string.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Size in bytes
-    function decode_string(uint256 p, bytes memory buf) internal pure returns (uint256, string memory) {
-        (uint256 pos, uint64 size) = decode_length_delimited(p, buf);
+    function decode_string(
+        bool,
+        uint256 p,
+        bytes memory buf
+    )
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            string memory
+        )
+    {
+        (bool success, uint256 pos, uint64 size) = decode_length_delimited(p, buf);
+        if (!success) {
+            return (false, pos, "");
+        }
 
+        // TODO add a check for array bounds
         bytes memory field = new bytes(size);
         for (uint256 i = 0; i < size; i++) {
             field[i] = buf[pos + i];
         }
 
-        return (pos, string(field));
+        return (true, pos, string(field));
     }
 
     /// @notice Decode bytes array.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Size in bytes
-    function decode_bytes(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+    function decode_bytes(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
         return decode_length_delimited(p, buf);
     }
 
     /// @notice Decode embedded message.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return New position
     /// @return Size in bytes
-    function decode_embedded_message(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+    function decode_embedded_message(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
         return decode_length_delimited(p, buf);
     }
 
     /// @notice Decode packed repeated field.
     /// @param p Position
     /// @param buf Buffer
+    /// @return Success
     /// @return Size in bytes
-    function decode_packed_repeated(uint256 p, bytes memory buf) internal pure returns (uint256, uint64) {
+    function decode_packed_repeated(uint256 p, bytes memory buf)
+        internal
+        pure
+        returns (
+            bool,
+            uint256,
+            uint64
+        )
+    {
         return decode_length_delimited(p, buf);
     }
 
