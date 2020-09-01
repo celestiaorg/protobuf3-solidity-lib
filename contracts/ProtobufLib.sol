@@ -505,11 +505,7 @@ library ProtobufLib {
     /// @return Success
     /// @return New position
     /// @return Size in bytes
-    function decode_string(
-        bool,
-        uint256 p,
-        bytes memory buf
-    )
+    function decode_string(uint256 p, bytes memory buf)
         internal
         pure
         returns (
