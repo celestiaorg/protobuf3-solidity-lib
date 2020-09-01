@@ -38,7 +38,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_varint.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, 3);
       assert.equal(val, 300);
 
@@ -53,7 +54,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_key.call(0, "0x" + encoded);
-      const { 0: pos, 1: field, 2: type } = result;
+      const { 0: success, 1: pos, 2: field, 3: type } = result;
+      assert.equal(success, true);
       assert.equal(pos, 1);
       assert.equal(field, 2);
       assert.equal(type, 0);
@@ -71,7 +73,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_int32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -88,7 +91,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_int32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -105,7 +109,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_int32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -122,7 +127,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_int32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -139,7 +145,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_uint32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -156,7 +163,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_uint32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -172,10 +180,9 @@ contract("TestFixture", async (accounts) => {
       const message = Message.create({ field: v });
       const encoded = Message.encode(message).finish().toString("hex");
 
-      await truffleAssert.reverts(
-        instance.decode_uint32.call(1, "0x" + encoded),
-        "ProtobufLib/decode_uint32 - highest 4 bytes must be 0"
-      );
+      const result = await instance.decode_uint32.call(1, "0x" + encoded);
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, false);
     });
 
     it("uint64", async () => {
@@ -188,7 +195,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_uint64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -205,7 +213,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_uint64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos.toNumber(), encoded.length / 2);
       assert.equal(val, v);
 
@@ -215,10 +224,9 @@ contract("TestFixture", async (accounts) => {
     it("uint64 too large", async () => {
       const instance = await TestFixture.deployed();
 
-      await truffleAssert.reverts(
-        instance.decode_uint64.call(1, "0x08ffffffffffffffffffff01"),
-        "ProtobufLib/decode_varint - uses more than MAX_VARINT_BYTES bytes"
-      );
+      const result = await instance.decode_uint64.call(1, "0x08ffffffffffffffffffff01");
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, false);
     });
 
     it("int64 max", async () => {
@@ -231,7 +239,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_int64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -248,7 +257,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_int64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -265,7 +275,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sint32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -282,7 +293,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sint32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -299,7 +311,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sint64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -316,7 +329,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sint64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -333,7 +347,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_bool.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, true);
 
@@ -359,7 +374,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_enum.call(3, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -376,7 +392,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_bits64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -393,7 +410,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_fixed64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -410,7 +428,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sfixed64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -427,7 +446,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sfixed64.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -444,7 +464,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_bits32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -461,7 +482,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_fixed32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -478,7 +500,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sfixed32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -495,7 +518,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_sfixed32.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -512,7 +536,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_length_delimited.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, "0x" + v.toString("hex"));
 
@@ -529,7 +554,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_string.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, v);
 
@@ -546,7 +572,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_bytes.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, "0x" + v.toString("hex"));
 
@@ -569,7 +596,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_embedded_message.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, "0x" + EmbeddedMessage.encode(embeddedMessage).finish().toString("hex"));
 
@@ -586,7 +614,8 @@ contract("TestFixture", async (accounts) => {
       const encoded = Message.encode(message).finish().toString("hex");
 
       const result = await instance.decode_packed_repeated.call(1, "0x" + encoded);
-      const { 0: pos, 1: val } = result;
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
       assert.equal(val, "0x" + encoded.slice(4));
 
