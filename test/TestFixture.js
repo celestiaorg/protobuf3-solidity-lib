@@ -337,7 +337,7 @@ contract("TestFixture", async (accounts) => {
       await instance.decode_sint64(1, "0x" + encoded);
     });
 
-    it("bool", async () => {
+    it("bool true", async () => {
       const instance = await TestFixture.deployed();
 
       const v = true;
@@ -350,7 +350,25 @@ contract("TestFixture", async (accounts) => {
       const { 0: success, 1: pos, 2: val } = result;
       assert.equal(success, true);
       assert.equal(pos, encoded.length / 2);
-      assert.equal(val, true);
+      assert.equal(val, v);
+
+      await instance.decode_bool(1, "0x" + encoded);
+    });
+
+    it("bool false", async () => {
+      const instance = await TestFixture.deployed();
+
+      const v = false;
+
+      const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "bool"));
+      const message = Message.create({ field: v });
+      const encoded = Message.encode(message).finish().toString("hex");
+
+      const result = await instance.decode_bool.call(1, "0x" + encoded);
+      const { 0: success, 1: pos, 2: val } = result;
+      assert.equal(success, true);
+      assert.equal(pos, encoded.length / 2);
+      assert.equal(val, v);
 
       await instance.decode_bool(1, "0x" + encoded);
     });
@@ -862,10 +880,25 @@ contract("TestFixture", async (accounts) => {
       await instance.encode_sint64(v);
     });
 
-    it("bool", async () => {
+    it("bool true", async () => {
       const instance = await TestFixture.deployed();
 
       const v = true;
+
+      const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "bool"));
+      const message = Message.create({ field: v });
+      const encoded = Message.encode(message).finish().toString("hex");
+
+      const result = await instance.encode_bool.call(v);
+      assert.equal(result, "0x" + encoded.slice(2));
+
+      await instance.encode_bool(v);
+    });
+
+    it("bool false", async () => {
+      const instance = await TestFixture.deployed();
+
+      const v = false;
 
       const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "bool"));
       const message = Message.create({ field: v });
