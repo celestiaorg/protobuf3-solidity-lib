@@ -675,7 +675,29 @@ contract("TestFixture", async (accounts) => {
         assert.equal(success, false);
       });
 
-      // TODO varint tests
+      it("varint index out of bounds", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_varint.call(0, "0x80");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("varint trailing zeroes", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_varint.call(0, "0x8000");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
+
+      it("varint more than 64 bits", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_varint.call(0, "0xFFFFFFFFFFFFFFFFFF7F");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
 
       it("int32 varint invalid", async () => {
         const instance = await TestFixture.deployed();
