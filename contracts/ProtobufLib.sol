@@ -303,11 +303,11 @@ library ProtobufLib {
             return (false, pos, false);
         }
 
-        if (val == 1) {
-            return (true, pos, true);
+        if (val == 0) {
+            return (true, pos, false);
         }
 
-        return (true, pos, false);
+        return (true, pos, true);
     }
 
     /// @notice Decode enumeration.
