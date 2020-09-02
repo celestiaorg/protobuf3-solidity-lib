@@ -23,6 +23,15 @@ contract("protobufjs", async (accounts) => {
 
       assert.equal(field, "18446744073709551615");
     });
+
+    it("protobufjs accepts extra bytes", async () => {
+      // Show protobufjs accepts up to 8 bytes for 4-byte ints
+      const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint32"));
+      const decoded = Message.decode(Buffer.from("08FFFFFFFFFFFFFFFFFF01", "hex"));
+      const field = decoded.toJSON().field;
+
+      assert.equal(field, "4294967295");
+    });
   });
 });
 
