@@ -511,6 +511,11 @@ library ProtobufLib {
             return (false, pos, 0);
         }
 
+        // Check for overflow
+        if (pos + size < pos) {
+            return (false, pos, 0);
+        }
+
         // Check that index is within bounds
         if (size + pos > buf.length) {
             return (false, pos, 0);
