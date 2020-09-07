@@ -878,6 +878,14 @@ contract("TestFixture", async (accounts) => {
         const { 0: success, 1: pos, 2: val } = result;
         assert.equal(success, false);
       });
+
+      it("length-delimited overflow", async () => {
+        const instance = await TestFixture.deployed();
+
+        const result = await instance.decode_length_delimited.call(0, "0xFFFFFFFFFFFFFFFFFF01");
+        const { 0: success, 1: pos, 2: val } = result;
+        assert.equal(success, false);
+      });
     });
   });
 
