@@ -1,7 +1,9 @@
 # protobuf3-solidity-lib
 
 [![NPM Package](https://img.shields.io/npm/v/@lazyledger/protobuf3-solidity-lib)](https://www.npmjs.org/package/@lazyledger/protobuf3-solidity-lib)
-![Node.js CI](https://github.com/lazyledger/protobuf3-solidity-lib/workflows/Node.js%20CI/badge.svg)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/lazyledger/protobuf3-solidity-lib)](https://github.com/lazyledger/protobuf3-solidity-lib/releases)
+[![Node.js CI](https://github.com/lazyledger/protobuf3-solidity-lib/workflows/Node.js%20CI/badge.svg)](https://github.com/lazyledger/protobuf3-solidity-lib/actions?query=workflow%3A%22Node.js+CI%22)
+[![GitHub](https://img.shields.io/github/license/lazyledger/protobuf3-solidity-lib)](https://github.com/lazyledger/protobuf3-solidity-lib/blob/master/LICENSE)
 
 Codec library for [protobuf3](https://developers.google.com/protocol-buffers) in Solidity. This library provides [encoding and decoding functions for core protobuf3 types](https://developers.google.com/protocol-buffers/docs/encoding).
 
