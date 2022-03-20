@@ -103,8 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
-# Truffle build directory
-build/
+# Hardhat directories
+artifacts/
+cache/
 
 # solidity-coverage output
 coverage.json
