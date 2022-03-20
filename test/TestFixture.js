@@ -1,5 +1,5 @@
+const BN = web3.utils.BN;
 const protobuf = require("protobufjs/light");
-const truffleAssert = require("truffle-assertions");
 
 const TestFixture = artifacts.require("TestFixture");
 
@@ -38,7 +38,7 @@ contract("protobufjs", async (accounts) => {
 contract("TestFixture", async (accounts) => {
   describe("constructor", async () => {
     it("should deploy", async () => {
-      await TestFixture.deployed();
+      await TestFixture.new();
     });
   });
 
@@ -50,7 +50,7 @@ contract("TestFixture", async (accounts) => {
   describe("decode", async () => {
     describe("passing", async () => {
       it("varint", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 1, "uint64"));
         const message = Message.create({ field: 300 });
@@ -66,7 +66,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("key", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 2, "uint64"));
         const message = Message.create({ field: 3 });
@@ -83,7 +83,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int32 positive", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 300;
 
@@ -101,7 +101,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int32 negative", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = -300;
 
@@ -119,7 +119,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int32 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 2147483647;
 
@@ -137,7 +137,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int32 min", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = -2147483648;
 
@@ -155,7 +155,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("uint32", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 300;
 
@@ -173,7 +173,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("uint32 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 4294967295;
 
@@ -191,7 +191,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("uint64", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "4294967296";
 
@@ -209,7 +209,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("uint64 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "18446744073709551615";
 
@@ -227,7 +227,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int64 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "9223372036854775807";
 
@@ -245,7 +245,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int64 min", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "-9223372036854775808";
 
@@ -263,7 +263,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sint32 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 2147483647;
 
@@ -281,7 +281,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sint32 min", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = -2147483648;
 
@@ -299,7 +299,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sint64 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "9223372036854775807";
 
@@ -317,7 +317,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sint64 min", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "-9223372036854775808";
 
@@ -335,7 +335,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bool true", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = true;
 
@@ -353,7 +353,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bool false", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = false;
 
@@ -371,7 +371,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("enum", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const EnumStruct = {
           ONE: 1,
@@ -398,7 +398,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bits64", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "4294967296";
 
@@ -416,7 +416,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("fixed64", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "4294967296";
 
@@ -434,7 +434,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sfixed64 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "9223372036854775807";
 
@@ -452,7 +452,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sfixed64 min", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "-9223372036854775808";
 
@@ -470,7 +470,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bits32", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 300;
 
@@ -488,7 +488,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("fixed32", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 300;
 
@@ -506,7 +506,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sfixed32 max", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 2147483647;
 
@@ -524,7 +524,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sfixed32 min", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = -2147483648;
 
@@ -542,7 +542,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("length-delimited", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = Buffer.from("deadbeef", "hex");
 
@@ -560,7 +560,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("string", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "foobar";
 
@@ -578,7 +578,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bytes", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = Buffer.from("deadbeef", "hex");
 
@@ -596,7 +596,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("embedded message", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 300;
 
@@ -620,7 +620,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("packed repeated", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = [300, 42, 69];
 
@@ -640,7 +640,7 @@ contract("TestFixture", async (accounts) => {
 
     describe("failing", async () => {
       it("uint32 too large", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "4294967296";
 
@@ -654,7 +654,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("uint64 too large", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_uint64.call(0, "0xFFFFFFFFFFFFFFFFFFFF01");
         const { 0: success, 1: pos, 2: val } = result;
@@ -662,7 +662,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("key varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_key.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: field, 3: type } = result;
@@ -670,7 +670,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("key wire type invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_key.call(0, "0x0F");
         const { 0: success, 1: pos, 2: field, 3: type } = result;
@@ -678,7 +678,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("key wire type start group", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_key.call(0, "0x03");
         const { 0: success, 1: pos, 2: field, 3: type } = result;
@@ -686,7 +686,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("key wire type end group", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_key.call(0, "0x04");
         const { 0: success, 1: pos, 2: field, 3: type } = result;
@@ -694,7 +694,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("varint index out of bounds", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_varint.call(0, "0x80");
         const { 0: success, 1: pos, 2: val } = result;
@@ -702,7 +702,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("varint trailing zeroes", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_varint.call(0, "0x8000");
         const { 0: success, 1: pos, 2: val } = result;
@@ -710,7 +710,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("varint more than 64 bits", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_varint.call(0, "0xFFFFFFFFFFFFFFFFFF7F");
         const { 0: success, 1: pos, 2: val } = result;
@@ -718,7 +718,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int32 varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_int32.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -726,7 +726,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int32 high bytes nonzero", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "4294967296";
 
@@ -740,7 +740,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("int64 varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_int64.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -748,7 +748,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("uint32 varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_uint32.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -756,7 +756,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sint32 varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_sint32.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -764,7 +764,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sint32 high bytes nonzero", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = "4294967296";
 
@@ -778,7 +778,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sint64 varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_sint64.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -786,7 +786,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bool varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_bool.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -794,7 +794,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bool not 0 or 1", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const v = 2;
 
@@ -808,7 +808,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bits64 too short", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_bits64.call(0, "0x00");
         const { 0: success, 1: pos, 2: val } = result;
@@ -816,7 +816,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("fixed64 bits64 invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_fixed64.call(0, "0x00");
         const { 0: success, 1: pos, 2: val } = result;
@@ -824,7 +824,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sfixed64 bits64 invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_sfixed64.call(0, "0x00");
         const { 0: success, 1: pos, 2: val } = result;
@@ -832,7 +832,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("bits32 too short", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_bits32.call(0, "0x00");
         const { 0: success, 1: pos, 2: val } = result;
@@ -840,7 +840,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("fixed32 bits32 invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_fixed32.call(0, "0x00");
         const { 0: success, 1: pos, 2: val } = result;
@@ -848,7 +848,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("sfixed32 bits32 invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_sfixed32.call(0, "0x00");
         const { 0: success, 1: pos, 2: val } = result;
@@ -856,7 +856,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("length-delimited varint invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_length_delimited.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -864,7 +864,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("length-delimited out of bounds", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_length_delimited.call(0, "0xAC02");
         const { 0: success, 1: pos, 2: val } = result;
@@ -872,7 +872,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("string length-delimited invalid", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_string.call(0, "0xFFFFFFFFFFFFFFFFFFFFF1");
         const { 0: success, 1: pos, 2: val } = result;
@@ -880,7 +880,7 @@ contract("TestFixture", async (accounts) => {
       });
 
       it("length-delimited overflow", async () => {
-        const instance = await TestFixture.deployed();
+        const instance = await TestFixture.new();
 
         const result = await instance.decode_length_delimited.call(0, "0xFFFFFFFFFFFFFFFFFF01");
         const { 0: success, 1: pos, 2: val } = result;
@@ -891,7 +891,7 @@ contract("TestFixture", async (accounts) => {
 
   describe("encode", async () => {
     it("varint", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 300;
 
@@ -906,7 +906,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("key", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const Message = new protobuf.Type("Message").add(new protobuf.Field("field", 2, "uint64"));
       const message = Message.create({ field: 1 });
@@ -919,7 +919,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("int32 positive", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 300;
 
@@ -934,7 +934,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("int32 negative", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = -300;
 
@@ -949,7 +949,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("int32 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 2147483647;
 
@@ -964,7 +964,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("int32 min", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = -2147483648;
 
@@ -979,7 +979,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("uint32", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 300;
 
@@ -994,7 +994,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("uint32 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 4294967295;
 
@@ -1009,7 +1009,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("uint64", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "4294967296";
 
@@ -1024,7 +1024,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("uint64 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "18446744073709551615";
 
@@ -1039,7 +1039,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("int64 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "9223372036854775807";
 
@@ -1054,7 +1054,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("int64 min", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "-9223372036854775808";
 
@@ -1062,14 +1062,14 @@ contract("TestFixture", async (accounts) => {
       const message = Message.create({ field: v });
       const encoded = Message.encode(message).finish().toString("hex");
 
-      const result = await instance.encode_int64.call(v);
+      const result = await instance.encode_int64.call(new BN(v));
       assert.equal(result, "0x" + encoded.slice(2));
 
-      await instance.encode_int64(v);
+      await instance.encode_int64(new BN(v));
     });
 
     it("sint32 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 2147483647;
 
@@ -1084,7 +1084,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("sint32 min", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = -2147483648;
 
@@ -1099,7 +1099,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("sint64 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "9223372036854775807";
 
@@ -1114,7 +1114,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("sint64 min", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "-9223372036854775808";
 
@@ -1122,14 +1122,14 @@ contract("TestFixture", async (accounts) => {
       const message = Message.create({ field: v });
       const encoded = Message.encode(message).finish().toString("hex");
 
-      const result = await instance.encode_sint64.call(v);
+      const result = await instance.encode_sint64.call(new BN(v));
       assert.equal(result, "0x" + encoded.slice(2));
 
-      await instance.encode_sint64(v);
+      await instance.encode_sint64(new BN(v));
     });
 
     it("bool true", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = true;
 
@@ -1144,7 +1144,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("bool false", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = false;
 
@@ -1159,7 +1159,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("enum", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const EnumStruct = {
         ONE: 1,
@@ -1183,7 +1183,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("bits64", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "4294967296";
 
@@ -1198,7 +1198,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("fixed64", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "4294967296";
 
@@ -1213,7 +1213,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("sfixed64 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "9223372036854775807";
 
@@ -1228,7 +1228,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("sfixed64 min", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "-9223372036854775808";
 
@@ -1236,14 +1236,14 @@ contract("TestFixture", async (accounts) => {
       const message = Message.create({ field: v });
       const encoded = Message.encode(message).finish().toString("hex");
 
-      const result = await instance.encode_sfixed64.call(v);
+      const result = await instance.encode_sfixed64.call(new BN(v));
       assert.equal(result, "0x" + encoded.slice(2));
 
-      await instance.encode_sfixed64(v);
+      await instance.encode_sfixed64(new BN(v));
     });
 
     it("bits32", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 300;
 
@@ -1258,7 +1258,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("fixed32", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 300;
 
@@ -1273,7 +1273,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("sfixed32 max", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 2147483647;
 
@@ -1288,7 +1288,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("sfixed32 min", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = -2147483648;
 
@@ -1303,7 +1303,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("length-delimited", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = Buffer.from("deadbeef", "hex");
 
@@ -1318,7 +1318,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("string", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = "foobar";
 
@@ -1333,7 +1333,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("bytes", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = Buffer.from("deadbeef", "hex");
 
@@ -1348,7 +1348,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("embedded message", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = 300;
 
@@ -1371,7 +1371,7 @@ contract("TestFixture", async (accounts) => {
     });
 
     it("packed repeated", async () => {
-      const instance = await TestFixture.deployed();
+      const instance = await TestFixture.new();
 
       const v = [300, 42, 69];
 
