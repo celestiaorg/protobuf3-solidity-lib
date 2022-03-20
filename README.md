@@ -45,16 +45,10 @@ Test:
 npm run test
 ```
 
-Code coverage:
-
-```sh
-npm run coverage
-```
-
 ## Supported Features
 
 | type              | decode | encode |
-| ----------------- | :----: | :----: |
+|-------------------|:------:|:------:|
 | key               |   ✔️   |   ✔️   |
 | varint            |   ✔️   |   ✔️   |
 | `int32`           |   ✔️   |   ✔️   |
