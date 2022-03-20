@@ -20,7 +20,7 @@ npm install --save @lazyledger/protobuf3-solidity-lib
 Import the library in Solidity:
 
 ```solidity
-pragma solidity >=0.6.0 <8.0.0;
+pragma solidity >=0.8.4 <0.9.0;
 
 import "@lazyledger/protobuf3-solidity-lib/contracts/ProtobufLib.sol";
 ```
