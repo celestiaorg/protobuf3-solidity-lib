@@ -1,3 +1,4 @@
+const BN = web3.utils.BN;
 const protobuf = require("protobufjs/light");
 
 const TestFixture = artifacts.require("TestFixture");
@@ -1061,10 +1062,10 @@ contract("TestFixture", async (accounts) => {
       const message = Message.create({ field: v });
       const encoded = Message.encode(message).finish().toString("hex");
 
-      const result = await instance.encode_int64.call(v);
+      const result = await instance.encode_int64.call(new BN(v));
       assert.equal(result, "0x" + encoded.slice(2));
 
-      await instance.encode_int64(v);
+      await instance.encode_int64(new BN(v));
     });
 
     it("sint32 max", async () => {
@@ -1121,10 +1122,10 @@ contract("TestFixture", async (accounts) => {
       const message = Message.create({ field: v });
       const encoded = Message.encode(message).finish().toString("hex");
 
-      const result = await instance.encode_sint64.call(v);
+      const result = await instance.encode_sint64.call(new BN(v));
       assert.equal(result, "0x" + encoded.slice(2));
 
-      await instance.encode_sint64(v);
+      await instance.encode_sint64(new BN(v));
     });
 
     it("bool true", async () => {
@@ -1235,10 +1236,10 @@ contract("TestFixture", async (accounts) => {
       const message = Message.create({ field: v });
       const encoded = Message.encode(message).finish().toString("hex");
 
-      const result = await instance.encode_sfixed64.call(v);
+      const result = await instance.encode_sfixed64.call(new BN(v));
       assert.equal(result, "0x" + encoded.slice(2));
 
-      await instance.encode_sfixed64(v);
+      await instance.encode_sfixed64(new BN(v));
     });
 
     it("bits32", async () => {
