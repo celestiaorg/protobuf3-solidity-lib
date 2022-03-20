@@ -3,7 +3,15 @@ pragma solidity >=0.8.4 <0.9.0;
 
 library ProtobufLib {
     /// @notice Protobuf wire types.
-    enum WireType { Varint, Bits64, LengthDelimited, StartGroup, EndGroup, Bits32, WIRE_TYPE_MAX }
+    enum WireType {
+        Varint,
+        Bits64,
+        LengthDelimited,
+        StartGroup,
+        EndGroup,
+        Bits32,
+        WIRE_TYPE_MAX
+    }
 
     /// @dev Maximum number of bytes for a varint.
     /// @dev 64 bits, in groups of base-128 (7 bits).
@@ -252,7 +260,10 @@ library ProtobufLib {
         }
 
         // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
-        uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
+        uint64 zigzag_val;
+        unchecked {
+            zigzag_val = (val >> 1) - (~(val & 1) + 1);
+        }
 
         return (true, pos, int32(uint32(zigzag_val)));
     }
@@ -278,7 +289,10 @@ library ProtobufLib {
         }
 
         // https://stackoverflow.com/questions/2210923/zig-zag-decoding/2211086#2211086
-        uint64 zigzag_val = (val >> 1) ^ (-(val & 1));
+        uint64 zigzag_val;
+        unchecked {
+            zigzag_val = (val >> 1) - (~(val & 1) + 1);
+        }
 
         return (true, pos, int64(zigzag_val));
     }
@@ -512,8 +526,10 @@ library ProtobufLib {
         }
 
         // Check for overflow
-        if (pos + size < pos) {
-            return (false, pos, 0);
+        unchecked {
+            if (pos + size < pos) {
+                return (false, pos, 0);
+            }
         }
 
         // Check that index is within bounds
@@ -655,7 +671,7 @@ library ProtobufLib {
     /// @param n Number
     /// @return Marshaled bytes
     function encode_int32(int32 n) internal pure returns (bytes memory) {
-        return encode_varint(uint64(n));
+        return encode_varint(uint64(int64(n)));
     }
 
     /// @notice Decode varint int64.
@@ -686,7 +702,9 @@ library ProtobufLib {
         // https://developers.google.com/protocol-buffers/docs/encoding#signed_integers
         uint32 mask = 0;
         if (n < 0) {
-            mask -= 1;
+            unchecked {
+                mask -= 1;
+            }
         }
         uint32 zigzag_val = (uint32(n) << 1) ^ mask;
 
@@ -700,7 +718,9 @@ library ProtobufLib {
         // https://developers.google.com/protocol-buffers/docs/encoding#signed_integers
         uint64 mask = 0;
         if (n < 0) {
-            mask -= 1;
+            unchecked {
+                mask -= 1;
+            }
         }
         uint64 zigzag_val = (uint64(n) << 1) ^ mask;
 
